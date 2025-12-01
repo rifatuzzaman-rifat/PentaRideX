@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+   
+
+<!-- 1. Browser & App Icons (Using your existing icons) -->
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+
+<!-- 2. Primary Meta Tags -->
+<title>PentaRideX v7.6 | DU Premium Bike Share</title>
+<meta name="title" content="PentaRideX v7.6 | DU Premium Bike Share">
+<meta name="description" content="Dhaka University's premium bike sharing app. Scan QR, Ride Instantly, and Earn as an Owner.">
+
+<!-- 3. Open Graph / Facebook / WhatsApp -->
+<meta property="og:type" content="website">
+<!-- REPLACE WITH YOUR ACTUAL URL -->
+<meta property="og:url" content="https://pentaridex.netlify.app/">
+<meta property="og:title" content="PentaRideX v7.6 | DU Premium Bike Share">
+<meta property="og:description" content="Dhaka University's premium bike sharing app. Scan QR, Ride Instantly, and Earn as an Owner.">
+
+<!-- CRITICAL: Point to the new 1200x630 image using FULL URL -->
+<meta property="og:image" content="https://pentaridex.netlify.app/social-preview.png">
+
+<!-- Helping WhatsApp render it faster -->
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<!-- 4. Twitter / X -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://pentaridex.netlify.app/">
+<meta property="twitter:title" content="PentaRideX v7.6 | DU Premium Bike Share">
+<meta property="twitter:description" content="Dhaka University's premium bike sharing app. Scan QR, Ride Instantly, and Earn as an Owner.">
+<meta property="twitter:image" content="https://pentaridex.netlify.app/social-preview.png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>PentaRideX v7.6 | DU Premium Bike Share (UMD)</title>
+
+    <!-- PWA MANIFEST LINKS -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a111f">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    
+ 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script crossorigin src="https://unpkg.com/react@18.2.0/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
+    
+    <script src="https://unpkg.com/history@5.3.0/umd/history.production.min.js"></script>
+    <script src="https://unpkg.com/react-router@6.3.0/umd/react-router.production.min.js"></script>
+    <script src="https://unpkg.com/react-router-dom@6.3.0/umd/react-router-dom.production.min.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script> 
+    
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        du: { yellow: '#fbbf24', blue: '#1e3a8a', dark: '#0a111f', primary: '#fbbf24' },
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-fast': 'pulse 1.5s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'enter': 'enter 0.4s ease-out forwards',
+                        'roll': 'roll 1s ease-out forwards',
+                        'particle-move': 'particle-move 60s linear infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                    },
+                    keyframes: {
+                        float: { '0%, 100%': { transform: 'translateY(0) rotate(0deg)' }, '50%': { transform: 'translateY(-20px) rotate(2deg)' } },
+                        enter: { '0%': { opacity: 0, transform: 'scale(0.95)' }, '100%': { opacity: 1, transform: 'scale(1)' } },
+                        roll: { '0%': { opacity: 0, transform: 'translateY(10px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+                        'particle-move': { '0%': { transform: 'translateY(0)' }, '100%': { transform: 'translateY(-100vh)' } }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Space Grotesk', sans-serif; background-color: #0a111f; color: white; overflow-x: hidden; -webkit-tap-highlight-color: transparent; }
+        
+        /* Glassmorphism System */
+        .glass { background: rgba(17, 25, 40, 0.75); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.125); }
+        .glass-heavy { background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.1); }
+        .glass-card { background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); border: 1px solid rgba(255,255,255,0.05); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a111f; }
+        ::-webkit-scrollbar-thumb { background: #fbbf24; border-radius: 6px; }
+
+        /* Custom Cursor (Glowing Ring) */
+        .cursor-glow { width: 300px; height: 300px; background: radial-gradient(circle, rgba(251, 191, 36, 0.15), transparent 70%); position: fixed; pointer-events: none; transform: translate(-50%, -50%); z-index: 9999; mix-blend-mode: color-dodge; opacity: 0.8; transition: opacity 0.3s; }
+        
+        /* Micro-Interaction Button Styling (glow/scale) */
+        .btn-interact { transition: all 0.2s ease-in-out; }
+        .btn-interact:hover { transform: scale(1.03); box-shadow: 0 0 15px rgba(251, 191, 36, 0.5); }
+        .btn-interact:active { transform: scale(0.98); }
+        .btn-secondary:hover { box-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+
+        /* Confetti */
+        .confetti { position: absolute; width: 8px; height: 8px; animation: fall linear forwards; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
+
+        /* Particle Background (Pure CSS implementation for dark mode) */
+        .particle-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; overflow: hidden; pointer-events: none; z-index: 0; }
+        .particle { position: absolute; background: rgba(255, 255, 255, 0.3); border-radius: 50%; opacity: 0; animation: particle-move linear infinite; }
+        
+        /* Generate 20 particles */
+        .particle:nth-child(1) { width: 1px; height: 1px; left: 10%; animation-duration: 40s; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 2px; height: 2px; left: 20%; animation-duration: 60s; animation-delay: 5s; }
+        .particle:nth-child(3) { width: 1.5px; height: 1.5px; left: 30%; animation-duration: 50s; animation-delay: 10s; }
+        .particle:nth-child(4) { width: 3px; height: 3px; left: 40%; animation-duration: 70s; animation-delay: 15s; }
+        .particle:nth-child(5) { width: 2.5px; height: 2.5px; left: 50%; animation-duration: 45s; animation-delay: 20s; }
+        .particle:nth-child(6) { width: 1px; height: 1px; left: 60%; animation-duration: 55s; animation-delay: 25s; }
+        .particle:nth-child(7) { width: 2px; height: 2px; left: 70%; animation-duration: 65s; animation-delay: 30s; }
+        .particle:nth-child(8) { width: 1.5px; height: 1.5px; left: 80%; animation-duration: 48s; animation-delay: 35s; }
+        .particle:nth-child(9) { width: 3px; height: 3px; left: 90%; animation-duration: 72s; animation-delay: 40s; }
+        .particle:nth-child(10) { width: 2.5px; height: 2.5px; left: 5%; animation-duration: 53s; animation-delay: 45s; }
+        .particle:nth-child(11) { width: 1px; height: 1px; left: 15%; animation-duration: 42s; animation-delay: 50s; }
+        .particle:nth-child(12) { width: 2px; height: 2px; left: 25%; animation-duration: 62s; animation-delay: 55s; }
+        .particle:nth-child(13) { width: 1.5px; height: 1.5px; left: 35%; animation-duration: 51s; animation-delay: 60s; }
+        .particle:nth-child(14) { width: 3px; height: 3px; left: 45%; animation-duration: 71s; animation-delay: 65s; }
+        .particle:nth-child(15) { width: 2.5px; height: 2.5px; left: 55%; animation-duration: 46s; animation-delay: 70s; }
+        .particle:nth-child(16) { width: 1px; height: 1px; left: 65%; animation-duration: 56s; animation-delay: 75s; }
+        .particle:nth-child(17) { width: 2px; height: 2px; left: 75%; animation-duration: 66s; animation-delay: 80s; }
+        .particle:nth-child(18) { width: 1.5px; height: 1.5px; left: 85%; animation-duration: 49s; animation-delay: 85s; }
+        .particle:nth-child(19) { width: 3px; height: 3px; left: 95%; animation-duration: 73s; animation-delay: 90s; }
+        .particle:nth-child(20) { width: 2.5px; height: 2.5px; left: 8%; animation-duration: 54s; animation-delay: 95s; }
+
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <div id="cursor-glow" class="cursor-glow hidden md:block"></div>
+    <div class="particle-container">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div><div class="particle"></div>
+    </div>
+
+    <script type="text/babel">
+        // --------------------------------------------------------------------------------
+        // 0. IMPORTS & UTILS & CONSTANTS
+        // --------------------------------------------------------------------------------
+        const { useState, useEffect, useContext, useReducer, useRef, useMemo, createContext, useCallback } = React;
+        const { HashRouter, Routes, Route, useNavigate, useLocation, Navigate } = ReactRouterDOM;
+
+        // --- CONSTANTS ---
+        // --- CONSTANTS ---
+const CURRENT_YEAR = 2024;
+const SESSIONS = Array.from({ length: CURRENT_YEAR - 2017 }, (_, i) => `${CURRENT_YEAR-i}-${String(CURRENT_YEAR+1-i).slice(-2)}`).reverse();
+const DEPTS = [
+    "Accounting & Info Systems", "Anthropology", "Applied Chemistry", "Applied Mathematics", "Arabic", "Bangla", "Banking & Insurance", "Biochemistry", "Botany",
+    "Computer Science & Engineering", "Economics", "Electrical & Electronic Engineering", "English", "Finance", "Geography & Environment", "History", "International Relations",
+    "Law", "Linguistics", "Management", "Marketing", "Mathematics", "Pharmacy", "Physics", "Political Science", "Psychology", "Public Administration", "Sociology", "Statistics",
+    "Zoology"
+].sort();
+
+const STATIONS = [
+    { id: 1, name: "TSC Integration", lat: 23.7313, lng: 90.3926 },
+    { id: 2, name: "Curzon Hall", lat: 23.7287, lng: 90.4005 },
+    { id: 3, name: "Arts Building", lat: 23.7335, lng: 90.3905 },
+    { id: 4, name: "Mokarram Bhaban", lat: 23.7295, lng: 90.4015 },
+    { id: 5, name: "Central Library", lat: 23.7328, lng: 90.3918 }
+];
+
+// --- FIREBASE CONFIGURATION ---
+const FIREBASE_CONFIG = {
+    apiKey: "AIzaSyD2o0jyEPYE3OB3UhhYiBhNPaHODCA5cF0",
+    authDomain: "pentaridex-db.firebaseapp.com",
+    projectId: "pentaridex-db",
+    storageBucket: "pentaridex-db.firebasestorage.app",
+    messagingSenderId: "537001383750",
+    appId: "1:537001383750:web:1dc359ba051ad468b2b747"
+};
+
+// Firebase Service
+const firebaseService = {
+    db: null,
+    isInitialized: false,
+    
+    init() {
+        try {
+            if (window.firebase) {
+                const app = firebase.initializeApp(FIREBASE_CONFIG);
+                this.db = firebase.firestore();
+                this.isInitialized = true;
+                console.log('Firebase initialized successfully');
+            } else {
+                console.warn('Firebase not available, using localStorage only');
+            }
+        } catch (error) {
+            console.error('Firebase init error:', error);
+        }
+    },
+    
+    async saveData(data) {
+        // Always save to localStorage first
+        localStorage.setItem('prx_data_v7_5', JSON.stringify(data));
+        
+        if (!this.isInitialized || !this.db) {
+            console.warn('Firebase not available, data saved locally only');
+            return false;
+        }
+        
+        try {
+            await this.db.collection('appData').doc('pentaRideX').set({
+                data: data,
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                lastUpdated: new Date().toISOString()
+            }, { merge: true });
+            
+            console.log('Data saved to Firebase successfully');
+            return true;
+        } catch (error) {
+            console.error('Firebase save error:', error);
+            return false;
+        }
+    },
+    
+    async loadData() {
+        // Try Firebase first
+        if (this.isInitialized && this.db) {
+            try {
+                const doc = await this.db.collection('appData').doc('pentaRideX').get();
+                if (doc.exists) {
+                    const firebaseData = doc.data().data;
+                    console.log('Data loaded from Firebase');
+                    // Save to localStorage as backup
+                    localStorage.setItem('prx_data_v7_5', JSON.stringify(firebaseData));
+                    return firebaseData;
+                }
+            } catch (error) {
+                console.warn('Firebase load failed, falling back to localStorage:', error);
+            }
+        }
+        
+        // Fallback to localStorage
+        const stored = localStorage.getItem('prx_data_v7_5');
+        if (stored) {
+            console.log('Data loaded from localStorage');
+            return JSON.parse(stored);
+        }
+        
+        console.log('No stored data found, generating mock data');
+        return null;
+    },
+    
+    async registerUser(userData) {
+        if (!this.isInitialized || !this.db) {
+            console.warn('Firebase not available, user saved locally only');
+            return false;
+        }
+        
+        try {
+            await this.db.collection('users').doc(userData.email).set({
+                userData: userData,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp(),
+                role: userData.role,
+                registrationNumber: userData.reg,
+                session: userData.session,
+                department: userData.dept,
+                name: userData.name
+            }, { merge: true });
+            
+            console.log('User registered successfully in Firebase');
+            return true;
+        } catch (error) {
+            console.error('Firebase user registration error:', error);
+            return false;
+        }
+    },
+    
+    async loginUser(email, password) {
+        if (!this.isInitialized || !this.db) {
+            console.warn('Firebase not available, using local authentication');
+            return null;
+        }
+        
+        try {
+            const doc = await this.db.collection('users').doc(email).get();
+            if (doc.exists) {
+                const user = doc.data().userData;
+                // Verify password
+                if (user.pass === password) {
+                    // Update last login
+                    await this.db.collection('users').doc(email).update({
+                        lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    console.log('User authenticated via Firebase');
+                    return user;
+                }
+            }
+            return null;
+        } catch (error) {
+            console.error('Firebase login error:', error);
+            return null;
+        }
+    },
+    
+    async getAllUsers() {
+        if (!this.isInitialized || !this.db) {
+            console.warn('Firebase not available, using local users');
+            return null;
+        }
+        
+        try {
+            const snapshot = await this.db.collection('users').get();
+            const users = [];
+            snapshot.forEach(doc => {
+                if (doc.data().userData) {
+                    users.push(doc.data().userData);
+                }
+            });
+            return users;
+        } catch (error) {
+            console.error('Firebase get users error:', error);
+            return null;
+        }
+    },
+    
+    async updateUser(userData) {
+        // Always save to localStorage
+        localStorage.setItem('prx_user_v7_5', JSON.stringify(userData));
+        
+        if (!this.isInitialized || !this.db) return false;
+        
+        try {
+            await this.db.collection('users').doc(userData.email).update({
+                userData: userData,
+                lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            return true;
+        } catch (error) {
+            console.error('Firebase user update error:', error);
+            return false;
+        }
+    }
+};
+        // --- AUDIO ENGINE (Singleton Pattern) ---
+        const audioCtxRef = { current: null };
+
+        const playSound = (type) => {
+            try {
+                if (!window.AudioContext && !window.webkitAudioContext) return;
+                
+                // Initialize context only once
+                if (!audioCtxRef.current) {
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    audioCtxRef.current = new AC();
+                }
+
+                // Resume if suspended
+                if (audioCtxRef.current.state === 'suspended') {
+                    audioCtxRef.current.resume();
+                }
+
+                const ctx = audioCtxRef.current;
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                
+                const now = ctx.currentTime;
+                if (type === 'success') { // Tiny bell/chime
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(1200, now + 0.1);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now); osc.stop(now + 0.3);
+                } else if (type === 'error') { // Buzzer
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(150, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.linearRampToValueAtTime(0.01, now + 0.2);
+                    osc.start(now); osc.stop(now + 0.2);
+                } else if (type === 'beep') { // QR success beep
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(440, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    osc.start(now); osc.stop(now + 0.1);
+                }
+            } catch (e) { /* Audio blocked */ }
+        };
+
+        // --- UTILS ---
+        const formatMoney = (n) => `৳${Math.floor(n).toLocaleString()}`;
+        
+        const generateConfetti = () => {
+            for(let i=0; i<60; i++) {
+                const el = document.createElement('div');
+                el.className = 'confetti';
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.backgroundColor = ['#fbbf24', '#1e3a8a', '#dc2626'][Math.floor(Math.random()*3)];
+                el.style.animationDuration = (Math.random() * 2 + 2) + 's';
+                document.body.appendChild(el);
+                setTimeout(() => el.remove(), 4000);
+            }
+        };
+
+        const isPeakHour = () => {
+            const hour = new Date().getHours();
+            // 12-2pm (12, 13) & 5-7pm (17, 18)
+            return (hour >= 12 && hour <= 13) || (hour >= 17 && hour <= 18);
+        };
+        
+        const dist = (lat1, lon1, lat2, lon2) => {
+            const R = 6371; // Radius of Earth in km
+            const dLat = (lat2 - lat1) * (Math.PI/180);
+            const dLon = (lon2 - lon1) * (Math.PI/180);
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) + 
+                      Math.cos(lat1 * (Math.PI/180)) * Math.cos(lat2 * (Math.PI/180)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c; // Distance in km
+        };
+
+        // --- Animated Counter Hook ---
+        const useAnimatedCounter = (endValue, duration = 500) => {
+            const [count, setCount] = useState(0);
+            const prevValue = useRef(endValue);
+            
+            useEffect(() => {
+                if (endValue === prevValue.current) return;
+                
+                const start = prevValue.current;
+                const change = endValue - start;
+                const startTime = performance.now();
+                
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const currentValue = start + change * progress;
+                    
+                    setCount(currentValue);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        prevValue.current = endValue;
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+                
+                return () => { prevValue.current = endValue; };
+            }, [endValue, duration]);
+            
+            return Math.floor(count);
+        };
+
+        // --------------------------------------------------------------------------------
+        // 1. DATA STORE (The Brain - useReducer for Zustand replacement)
+        // --------------------------------------------------------------------------------
+        
+        const generateMockData = () => {
+            // TEST BIKES: B-0001 to B-0010 (Requested by User)
+            const testBikes = Array.from({length: 10}, (_, i) => {
+                const idNum = i + 1;
+                const id = `B-00${idNum < 10 ? '0' + idNum : idNum}`; // B-0001 to B-0010
+                return {
+                    id: id,
+                    stationId: 2, // Curzon Hall (Matches sample QR)
+                    lat: 23.7287 + (Math.random() - 0.5) * 0.001,
+                    lng: 90.4005 + (Math.random() - 0.5) * 0.001,
+                    battery: 100,
+                    status: 'available',
+                    earnings: 0,
+                    rides: 0,
+                    utilization: 0,
+                    ownerId: '2024613237', // User sample owner
+                    ownerRating: 5.0,
+                    boostRequest: null,
+                };
+            });
+
+            // Random Bikes (B1000+)
+            const randomBikes = Array.from({length: 55}, (_, i) => ({
+                id: `B${1000+i}`,
+                stationId: STATIONS[Math.floor(Math.random() * STATIONS.length)].id,
+                lat: STATIONS[Math.floor(Math.random() * STATIONS.length)].lat + (Math.random() - 0.5) * 0.005,
+                lng: STATIONS[Math.floor(Math.random() * STATIONS.length)].lng + (Math.random() - 0.5) * 0.005,
+                battery: Math.floor(Math.random() * 60) + 40,
+                status: Math.random() > 0.8 ? 'in_use' : 'available',
+                earnings: Math.floor(Math.random() * 8000),
+                rides: Math.floor(Math.random() * 100),
+                utilization: Math.floor(Math.random() * 80) + 10,
+                ownerId: i < 10 ? 'owner@test.com' : `owner${i}@du.ac.bd`,
+                ownerRating: 4.5,
+                boostRequest: null,
+            }));
+            
+            // Combine
+            const bikes = [...testBikes, ...randomBikes];
+            
+            // 120 Past Rides (Last 30 days data for charts)
+            const rides = Array.from({length: 120}, (_, i) => {
+                const date = new Date();
+                date.setDate(date.getDate() - Math.floor(Math.random() * 30));
+                
+                return {
+                    id: `R${9000+i}`,
+                    userId: 'rider@test.com',
+                    bikeId: `B${1000 + Math.floor(Math.random()*65)}`,
+                    startTime: date.getTime(),
+                    endTime: date.getTime() + (Math.random() * 3600000), // Up to 1 hr
+                    cost: Math.floor(Math.random() * 50) + 10,
+                    status: 'completed',
+                    rating: Math.floor(Math.random() * 2) + 4, // 4 or 5 stars
+                    lateReturn: Math.random() < 0.1
+                };
+            });
+
+            return {
+                users: [
+                    { email: 'rider@test.com', pass: '123', role: 'rider', name: 'Sakib Rider', balance: 450, reg: '2024101010', session: '2024-25', dept: 'CSE', rideStreak: 12, badges: ['bronze'], isBanned: false },
+                    { email: 'owner@test.com', pass: '123', role: 'owner', name: 'Jamal Owner', balance: 12500, reg: '2020101010', session: '2020-21', dept: 'Marketing', ownerScore: 4.8, isBanned: false },
+                    { email: 'admin@prx.com', pass: '123', role: 'admin', name: 'Super Admin', balance: 0, reg: '0000', session: 'N/A', isBanned: false }
+                ],
+                bikes,
+                stations: STATIONS,
+                rides,
+                config: { baseRate: 2, peakMultiplier: 1.5, insuranceCost: 5, peakActive: isPeakHour() },
+                announcement: "PentaRideX v7 is live! Enjoy 50% off until 12PM.",
+                referralLeaderboard: [{ name: 'A', count: 5 }, { name: 'B', count: 3 }],
+                maintenanceReports: Array.from({length: 15}, (_,i) => ({id: i, bikeId: `B${1000+i}`, status: 'Pending', reason: 'Low Battery (<20%)'})),
+                pendingOwners: Array.from({length: 8}, (_, i) => ({name: `Pending ${i}`, email: `pending${i}@du.ac.bd`, status: 'Pending'})),
+                withdrawalRequests: Array.from({length: 4}, (_, i) => ({id: i, ownerId: `owner${i}@du.ac.bd`, amount: 1000+i*500, status: 'Pending'})),
+            };
+        };
+
+        const AppContext = createContext();
+
+        const appReducer = (state, action) => {
+            let newState = JSON.parse(JSON.stringify(state)); // Deep clone state for safe mutation
+            
+            switch(action.type) {
+                case 'SYNC_STATUS': newState.syncStatus = action.payload;
+                break;
+                case 'INIT': 
+                    newState.db = action.payload.db;
+                    newState.user = action.payload.user;
+                    newState.loading = false;
+                    break;
+                case 'LOGIN': newState.user = action.payload; playSound('success'); break;
+                case 'LOGOUT': newState.user = null; break;
+                case 'TOAST': newState.toast = action.payload; break;
+                case 'REGISTER': newState.db.users.push(action.payload); break;
+                
+                case 'START_RIDE': {
+    const { bikeId, userId, withInsurance } = action.payload;
+    const cleanId = bikeId.replace('-', '');
+    
+    const bIdx = newState.db.bikes.findIndex(b => b.id === bikeId || b.id === cleanId);
+    
+    if (bIdx > -1) {
+        newState.db.bikes[bIdx].status = 'in_use';
+        newState.db.bikes[bIdx].stationId = null;
+        
+        const rideObj = { id: 'R' + Date.now(), bikeId: newState.db.bikes[bIdx].id, userId, startTime: Date.now(), status: 'ongoing', insurance: withInsurance };
+        newState.db.rides.push(rideObj);
+        
+        // FIX: Actually deduct insurance cost
+        const uIdx = newState.db.users.findIndex(u => u.email === userId);
+        if (withInsurance) {
+            const insCost = parseInt(newState.db.config.insuranceCost) || 5;
+            newState.db.users[uIdx].balance = Math.max(0, parseInt(newState.db.users[uIdx].balance) - insCost);
+            newState.toast = { msg: `Ride started with insurance! -${insCost}৳`, type: 'success' };
+        } else {
+            newState.toast = { msg: 'Ride started! No insurance selected.', type: 'success' };
+        }
+        
+        newState.user = newState.db.users[uIdx]; // Update user state
+        generateConfetti();
+        playSound('success');
+    } else {
+        newState.toast = { msg: `Bike ID ${bikeId} not found in system database.`, type: 'error' };
+        playSound('error');
+    }
+    break;
+}
+                case 'END_RIDE': {
+    const { stationId, rating } = action.payload;
+    const rIdx = newState.db.rides.findIndex(r => r.userId === state.user.email && r.status === 'ongoing');
+    if (rIdx > -1) {
+        const ride = newState.db.rides[rIdx];
+        const durationMins = Math.ceil((Date.now() - ride.startTime) / 60000);
+        
+        // Pricing Logic
+        const rate = newState.db.config.baseRate * (state.db.config.peakActive && isPeakHour() ? newState.db.config.peakMultiplier : 1);
+        const cost = Math.max(10, Math.ceil(durationMins * rate));
+        
+        // Payment Split: 75% Owner, 25% Admin (Remaining 25% is effectively 'Admin')
+        const ownerShare = cost * 0.75;
+        
+        // Update Ride
+        newState.db.rides[rIdx] = { ...ride, status: 'completed', endTime: Date.now(), cost, rating };
+        
+        // FIX: Actually deduct ride cost from user balance
+        const uIdx = newState.db.users.findIndex(u => u.email === state.user.email);
+        if (uIdx > -1) {
+            const currentBalance = parseInt(newState.db.users[uIdx].balance) || 0;
+            newState.db.users[uIdx].balance = Math.max(0, currentBalance - parseInt(cost));
+            newState.db.users[uIdx].rideStreak = (newState.db.users[uIdx].rideStreak || 0) + 1;
+            if (newState.db.users[uIdx].rideStreak >= 50) newState.db.users[uIdx].badges = ['gold'];
+            else if (newState.db.users[uIdx].rideStreak >= 10) newState.db.users[uIdx].badges = ['bronze'];
+        }
+        
+        // Update Bike, Owner Earnings, and Battery
+        const bikeIdx = newState.db.bikes.findIndex(b => b.id === ride.bikeId);
+        const bike = newState.db.bikes[bikeIdx];
+        
+        if (bike) {
+            newState.db.bikes[bikeIdx].status = 'available';
+            newState.db.bikes[bikeIdx].stationId = stationId;
+            newState.db.bikes[bikeIdx].battery -= Math.floor(durationMins / 15) + 1; // Decrease battery based on duration
+            newState.db.bikes[bikeIdx].earnings += ownerShare;
+            newState.db.bikes[bikeIdx].ownerRating = ((bike.ownerRating || 5) * (bike.rides || 0) + rating) / ((bike.rides || 0) + 1);
+            newState.db.bikes[bikeIdx].rides = (bike.rides || 0) + 1;
+        }
+        
+        // Late Return Penalty (Only if NO insurance)
+        if (!ride.insurance && durationMins > 60) {
+            const penalty = 50;
+            const currentBalance = parseInt(newState.db.users[uIdx].balance) || 0;
+            newState.db.users[uIdx].balance = Math.max(0, currentBalance - penalty);
+            newState.toast = { msg: `Late return penalty: -${penalty}৳ (No insurance)`, type: 'error' };
+            newState.db.rides[rIdx].lateReturn = true;
+        }
+        
+        newState.user = newState.db.users[uIdx]; // Update user state
+        
+        // FIX: Add success message with cost breakdown
+        const peakMsg = state.db.config.peakActive && isPeakHour() ? ' (Peak Hours)' : '';
+        newState.toast = { msg: `Ride completed! Cost: ${formatMoney(cost)}${peakMsg}`, type: 'success' };
+        playSound('success');
+    }
+    break;
+}
+                case 'TOP_UP': {
+    const { amount, bonus } = action.payload;
+    const uIdx = newState.db.users.findIndex(u => u.email === state.user.email);
+    if (uIdx > -1) {
+        const currentBal = parseInt(newState.db.users[uIdx].balance) || 0;
+        const addAmt = parseInt(amount) || 0;
+        const addBonus = parseInt(bonus) || 0;
+        
+        // FIX: Actually add the money to balance
+        newState.db.users[uIdx].balance = currentBal + addAmt + addBonus;
+        newState.user = newState.db.users[uIdx]; // Sync Local State
+        playSound('success');
+        
+        // Add toast confirmation
+        newState.toast = {msg: `Successfully added ${formatMoney(addAmt + addBonus)} to balance!`, type: 'success'};
+    }
+    break;
+}
+                case 'ADMIN_TOGGLE_PEAK': {
+                    newState.db.config.peakActive = action.payload;
+                    break;
+                }
+                case 'ADMIN_BAN_USER': {
+                    const { email, ban } = action.payload;
+                    const uIdx = newState.db.users.findIndex(u => u.email === email);
+                    if (uIdx > -1) newState.db.users[uIdx].isBanned = ban;
+                    break;
+                }
+                case 'ADMIN_BROADCAST': {
+                    newState.db.announcement = action.payload;
+                    break;
+                }
+                case 'REFER_FRIEND': {
+    const uIdx = newState.db.users.findIndex(u => u.email === state.user.email);
+    // FIX: Actually add referral bonus
+    const referralBonus = 50;
+    const currentBalance = parseInt(newState.db.users[uIdx].balance) || 0;
+    newState.db.users[uIdx].balance = currentBalance + referralBonus;
+    newState.user = newState.db.users[uIdx];
+    newState.toast = { msg: `Referral bonus added! +${referralBonus}৳`, type: 'success' };
+    break;
+}
+                case 'OWNER_REQUEST_BOOST': {
+    const { bikeId, targetStationId } = action.payload;
+    const bIdx = newState.db.bikes.findIndex(b => b.id === bikeId);
+    if (bIdx > -1) {
+        const uIdx = newState.db.users.findIndex(u => u.email === state.user.email);
+        // FIX: Actually check and deduct boost cost
+        const boostCost = 20;
+        const currentBalance = parseInt(newState.db.users[uIdx].balance) || 0;
+        
+        if (currentBalance >= boostCost) {
+            newState.db.users[uIdx].balance = currentBalance - boostCost;
+            newState.db.bikes[bIdx].boostRequest = targetStationId;
+            newState.user = newState.db.users[uIdx];
+            newState.toast = { msg: `Boost requested for ${bikeId}! -${boostCost}৳`, type: 'success' };
+        } else {
+            newState.toast = { msg: `Insufficient balance for boost! Need ${boostCost}৳`, type: 'error' };
+            playSound('error');
+        }
+    }
+    break;
+}
+                case 'ADMIN_APPROVE_BOOST': {
+                    const { bikeId, stationId } = action.payload;
+                    const bIdx = newState.db.bikes.findIndex(b => b.id === bikeId);
+                    if (bIdx > -1) {
+                        newState.db.bikes[bIdx].stationId = stationId;
+                        newState.db.bikes[bIdx].lat = STATIONS.find(s => s.id === stationId).lat;
+                        newState.db.bikes[bIdx].lng = STATIONS.find(s => s.id === stationId).lng;
+                        newState.db.bikes[bIdx].boostRequest = null;
+                    }
+                    break;
+                }
+                case 'ADMIN_PROCESS_MAINTENANCE': {
+                    const { id, status } = action.payload;
+                    const mIdx = newState.db.maintenanceReports.findIndex(r => r.id === id);
+                    if (mIdx > -1) newState.db.maintenanceReports[mIdx].status = status;
+                    break;
+                }
+                case 'ADMIN_APPROVE_OWNER': {
+                    const { email } = action.payload;
+                    const pIdx = newState.db.pendingOwners.findIndex(o => o.email === email);
+                    if (pIdx > -1) newState.db.pendingOwners.splice(pIdx, 1);
+                    // Add logic to officially set role if needed, but for mock, removal is enough
+                    break;
+                }
+            }
+            // Persistence (Local Storage for Zustand persistence logic)
+            // UPDATED STORAGE KEY TO FORCE REFRESH OF TEST DATA & FIX BUGS
+            localStorage.setItem('prx_data_v7_5', JSON.stringify(newState.db));
+            localStorage.setItem('prx_user_v7_5', JSON.stringify(newState.user));
+            return newState;
+        };
+
+        const AppProvider = ({ children }) => {
+    const [state, dispatch] = useReducer(appReducer, {
+        user: null,
+        db: null,
+        toast: null,
+        loading: true,
+        syncStatus: 'checking'
+    });
+
+    // Enhanced persistence with Firebase
+    const persistData = useCallback(async (data, userData = null) => {
+        if (data) {
+            localStorage.setItem('prx_data_v7_5', JSON.stringify(data));
+        }
+        if (userData) {
+            localStorage.setItem('prx_user_v7_5', JSON.stringify(userData));
+        }
+        
+        try {
+            let dataSaved = true;
+            let userSaved = true;
+            
+            if (data) {
+                dataSaved = await firebaseService.saveData(data);
+            }
+            if (userData && firebaseService.isInitialized) {
+                userSaved = await firebaseService.updateUser(userData);
+            }
+            
+            if (dataSaved && userSaved) {
+                dispatch({ type: 'SYNC_STATUS', payload: 'online' });
+            } else {
+                dispatch({ type: 'SYNC_STATUS', payload: 'offline' });
+            }
+        } catch (error) {
+            console.warn('Firebase sync failed:', error);
+            dispatch({ type: 'SYNC_STATUS', payload: 'offline' });
+        }
+    }, []);
+
+    // Enhanced initial load
+    useEffect(() => {
+        const loadInitialData = async () => {
+            firebaseService.init();
+            
+            dispatch({ type: 'SYNC_STATUS', payload: 'checking' });
+            
+            let dbData = null;
+            let userData = null;
+
+            // Load app data
+            dbData = await firebaseService.loadData();
+            
+            if (!dbData) {
+                dbData = generateMockData();
+                // Save initial data to Firebase
+                await firebaseService.saveData(dbData);
+            } else {
+                // Sync users from Firebase
+                try {
+                    const firebaseUsers = await firebaseService.getAllUsers();
+                    if (firebaseUsers && firebaseUsers.length > 0) {
+                        const localUsers = dbData.users || [];
+                        const firebaseUserEmails = new Set(firebaseUsers.map(u => u.email));
+                        const uniqueLocalUsers = localUsers.filter(u => !firebaseUserEmails.has(u.email));
+                        dbData.users = [...firebaseUsers, ...uniqueLocalUsers];
+                        console.log(`Synced ${firebaseUsers.length} users from Firebase`);
+                    }
+                } catch (error) {
+                    console.warn('Failed to sync users from Firebase:', error);
+                }
+            }
+
+            await persistData(dbData);
+
+            // Load current user
+            const storedUser = localStorage.getItem('prx_user_v7_5');
+            if (storedUser) {
+                userData = JSON.parse(storedUser);
+            }
+
+            setTimeout(() => {
+                dispatch({ type: 'INIT', payload: { db: dbData, user: userData } });
+            }, 800);
+        };
+
+        loadInitialData();
+    }, [persistData]);
+
+    // Enhanced reducer with Firebase persistence
+    const enhancedDispatch = useCallback((action) => {
+        const prevState = JSON.parse(JSON.stringify(state));
+        
+        dispatch(action);
+        
+        setTimeout(() => {
+            const newState = JSON.parse(JSON.stringify(state));
+            
+            switch(action.type) {
+                case 'LOGIN':
+                    persistData(newState.db, newState.user);
+                    break;
+                case 'LOGOUT':
+                    persistData(newState.db, null);
+                    break;
+                case 'START_RIDE':
+                case 'END_RIDE':
+                case 'TOP_UP':
+                case 'ADMIN_BROADCAST':
+                case 'REGISTER':
+                case 'REFER_FRIEND':
+                case 'OWNER_REQUEST_BOOST':
+                case 'ADMIN_APPROVE_BOOST':
+                case 'ADMIN_PROCESS_MAINTENANCE':
+                case 'ADMIN_APPROVE_OWNER':
+                case 'ADMIN_TOGGLE_PEAK':
+                case 'ADMIN_BAN_USER':
+                    persistData(newState.db, newState.user);
+                    break;
+                default:
+                    if (JSON.stringify(prevState.db) !== JSON.stringify(newState.db) || 
+                        JSON.stringify(prevState.user) !== JSON.stringify(newState.user)) {
+                        persistData(newState.db, newState.user);
+                    }
+            }
+        }, 500);
+    }, [state, persistData]);
+
+    // Toast Timer
+    useEffect(() => {
+        if(state.toast) {
+            const timer = setTimeout(() => enhancedDispatch({type:'TOAST', payload: null}), 3500);
+            return () => clearTimeout(timer);
+        }
+    }, [state.toast]);
+
+    return (
+        <AppContext.Provider value={{state, dispatch: enhancedDispatch}}>
+            {children}
+            {/* Sync Status Indicator */}
+            <div className={`fixed bottom-4 right-4 text-xs px-3 py-2 rounded-full z-50 border backdrop-blur-sm ${
+                state.syncStatus === 'online' ? 'bg-green-500/20 text-green-400 border-green-500/30' : 
+                state.syncStatus === 'offline' ? 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30' : 
+                state.syncStatus === 'error' ? 'bg-red-500/20 text-red-400 border-red-500/30' :
+                'bg-blue-500/20 text-blue-400 border-blue-500/30'
+            }`}>
+                {state.syncStatus === 'online' ? '🔥 Online' : 
+                 state.syncStatus === 'offline' ? '💾 Offline' : 
+                 state.syncStatus === 'error' ? '❌ Sync Error' : '⏳ Connecting...'}
+            </div>
+        </AppContext.Provider>
+    );
+};
+        // --------------------------------------------------------------------------------
+        // 2. ATOMIC & COMPLEX COMPONENTS
+        // --------------------------------------------------------------------------------
+        
+        const Icon = ({ name, size=20, className="", ...props }) => {
+            // Renders Lucide icons
+            useEffect(() => lucide.createIcons(), [name]); 
+            return <i data-lucide={name} className={className} style={{ width: size, height: size }} {...props}></i>;
+        };
+
+        const Button = ({ children, onClick, variant="primary", className="", disabled=false, icon }) => {
+            const variants = {
+                primary: "bg-gradient-to-r from-du-primary to-orange-500 text-du-dark shadow-du-primary/30",
+                secondary: "glass text-white border border-white/20 hover:bg-white/10 shadow-black/30",
+                danger: "bg-gradient-to-r from-red-600 to-red-800 text-white shadow-red-500/30"
+            };
+            return (
+                <button 
+                    onClick={(e) => { if(!disabled) { onClick && onClick(e); playSound('hover'); } }} 
+                    disabled={disabled}
+                    className={`btn-interact px-6 py-3 rounded-xl font-bold transition-all duration-200 flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed ${variants[variant]} ${className}`}
+                >
+                    {icon && <Icon name={icon} size={20} />}
+                    {children}
+                </button>
+            );
+        };
+
+        const Toast = () => {
+            const { state } = useContext(AppContext);
+            if (!state.toast) return null;
+            const isErr = state.toast.type === 'error';
+            return (
+                <div className={`fixed top-6 right-6 z-[9999] flex items-center gap-3 px-6 py-4 rounded-xl shadow-2xl toast-enter border ${isErr ? 'bg-red-900/90 border-red-500' : 'bg-green-900/90 border-green-500'} animate-roll`}>
+                    <Icon name={isErr ? "alert-circle" : "check-circle"} className={isErr ? "text-red-200" : "text-green-200"} />
+                    <span className="font-semibold text-white">{state.toast.msg}</span>
+                </div>
+            );
+        };
+        
+        const Skeleton = ({ className="h-4 w-full" }) => <div className={`skeleton bg-gray-700/50 rounded ${className}`}></div>;
+
+        // --- MAP COMPONENT ---
+        const MapComponent = React.memo(({ bikes, onStationClick, heatData = [] }) => {
+            const mapContainerRef = useRef(null);
+            const mapInstanceRef = useRef(null);
+            const markersLayerRef = useRef(null); 
+
+            useEffect(() => {
+                if (!mapContainerRef.current) return;
+                if (mapInstanceRef.current) {
+                    mapInstanceRef.current.remove();
+                    mapInstanceRef.current = null;
+                }
+                const timer = setTimeout(() => {
+                    if (!mapContainerRef.current) return; 
+                    try {
+                        const map = L.map(mapContainerRef.current, {
+                            zoomControl: false,
+                            attributionControl: false
+                        }).setView([23.7313, 90.3926], 15);
+
+                        L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png').addTo(map);
+                        const markersLayer = L.layerGroup().addTo(map);
+                        mapInstanceRef.current = map;
+                        markersLayerRef.current = markersLayer;
+                        map.invalidateSize();
+                    } catch (e) {
+                        console.error("Map Init Error:", e);
+                    }
+                }, 50); 
+
+                return () => {
+                    clearTimeout(timer);
+                    if (mapInstanceRef.current) {
+                        mapInstanceRef.current.remove();
+                        mapInstanceRef.current = null;
+                        markersLayerRef.current = null;
+                    }
+                };
+            }, []);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    if (mapInstanceRef.current && markersLayerRef.current) {
+                        clearInterval(timer);
+                        const layerGroup = markersLayerRef.current;
+                        layerGroup.clearLayers();
+                        STATIONS.forEach(s => {
+                            const avail = bikes.filter(b => b.stationId === s.id && b.status === 'available').length;
+                            const html = `<div class="relative flex items-center justify-center w-10 h-10 bg-du-blue border-2 border-du-primary rounded-full shadow-xl transition-transform hover:scale-110 cursor-pointer">
+                                <span class="text-white font-bold text-sm">${avail}</span>
+                            </div>`;
+                            const icon = L.divIcon({ html, className: 'custom-marker', iconSize: [40, 40] });
+                            L.marker([s.lat, s.lng], { icon }).addTo(layerGroup).on('click', () => onStationClick(s));
+                        });
+                    }
+                }, 100);
+                return () => clearInterval(timer);
+            }, [bikes, onStationClick]); 
+
+            return <div ref={mapContainerRef} className="w-full h-full rounded-3xl overflow-hidden grayscale-[0.1]" />;
+        });
+        
+        // --- Modal Component ---
+        const Modal = ({ title, children, onClose, isOpen, className="" }) => {
+            const modalRef = useRef(null);
+            const [isDragging, setIsDragging] = useState(false);
+            const [position, setPosition] = useState({ x: 0, y: 0 });
+            const offset = useRef({ x: 0, y: 0 });
+            
+            useEffect(() => {
+                const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+                if (isOpen) window.addEventListener('keydown', handleEsc);
+                return () => window.removeEventListener('keydown', handleEsc);
+            }, [isOpen, onClose]);
+
+            const onMouseDown = useCallback((e) => {
+                if(e.button !== 0) return; 
+                setIsDragging(true);
+                offset.current = { x: e.clientX - position.x, y: e.clientY - position.y };
+            }, [position.x, position.y]);
+
+            const onMouseMove = useCallback((e) => {
+                if (!isDragging || !modalRef.current) return;
+                setPosition({ x: e.clientX - offset.current.x, y: e.clientY - offset.current.y });
+            }, [isDragging]);
+
+            const onMouseUp = useCallback(() => setIsDragging(false), []);
+
+            useEffect(() => {
+                window.addEventListener('mousemove', onMouseMove);
+                window.addEventListener('mouseup', onMouseUp);
+                return () => {
+                    window.removeEventListener('mousemove', onMouseMove);
+                    window.removeEventListener('mouseup', onMouseUp);
+                };
+            }, [onMouseMove, onMouseUp]);
+            
+            if (!isOpen) return null;
+            
+            return (
+                <div className="fixed inset-0 z-[500] flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-enter" onClick={onClose}>
+                    <div 
+                        ref={modalRef} 
+                        className={`glass-card w-full max-w-md p-6 rounded-2xl shadow-2xl border-t border-white/20 transform ${className}`}
+                        onClick={e => e.stopPropagation()}
+                        style={{ transform: `translate(${position.x}px, ${position.y}px)`, cursor: isDragging ? 'grabbing' : 'grab' }}
+                    >
+                        <div className="flex justify-between items-center mb-4 cursor-grab" onMouseDown={onMouseDown}>
+                            <h3 className="text-xl font-bold text-du-primary">{title}</h3>
+                            <button onClick={onClose} className="text-gray-400 hover:text-white transition"><Icon name="x" size={24} /></button>
+                        </div>
+                        {children}
+                    </div>
+                </div>
+            );
+        };
+        
+        // --- UPGRADED QR SCANNER & MANUAL ENTRY & JSON PARSING ---
+        const QRScanner = ({ onScanSuccess, onScanError, onClose }) => {
+            const { state, dispatch } = useContext(AppContext);
+            const qrRef = useRef(null);
+            const [manualId, setManualId] = useState('');
+
+            useEffect(() => {
+                const timer = setTimeout(() => {
+                    const html5QrcodeScanner = new Html5QrcodeScanner("qr-reader", { fps: 10, qrbox: 250, aspectRatio: 1.0, disableFlip: false });
+                    const successHandler = (decodedText) => {
+                        html5QrcodeScanner.clear().then(() => {
+                            playSound('beep');
+                            onScanSuccess(decodedText);
+                        });
+                    };
+                    html5QrcodeScanner.render(successHandler, (err) => onScanError && onScanError(err));
+                    qrRef.current = html5QrcodeScanner;
+                }, 100);
+                
+                return () => {
+                    clearTimeout(timer);
+                    if (qrRef.current) qrRef.current.clear().catch(err => console.error("Failed to clear scanner:", err));
+                };
+            }, []);
+
+            const handleManualUnlock = () => {
+                const id = manualId.trim().toUpperCase();
+                if (!id) return;
+                
+                const cleanId = id.startsWith('B') ? id : `B${id}`;
+                
+                const manualData = {
+                    BikeNo: cleanId,
+                    PresentStation: 'Unknown (Manual)',
+                    Owner: 'Manual Entry'
+                };
+                
+                playSound('success');
+                onScanSuccess(JSON.stringify(manualData));
+            };
+
+            return (
+                <Modal title="Scan Bike QR Code" onClose={onClose} isOpen={true}>
+                    <div id="qr-reader" className="rounded-lg overflow-hidden border-2 border-du-primary/50 mb-4"></div>
+                    
+                    <div className="border-t border-gray-700 pt-4">
+                        <p className="text-xs text-gray-400 mb-2 text-center">Scanner failing? Enter Bike ID manually (e.g., B1001)</p>
+                        <div className="flex gap-2">
+                            <input 
+                                className="flex-1 bg-black/30 border border-gray-700 rounded-xl p-3 text-sm focus:border-du-primary outline-none" 
+                                placeholder="Bike ID"
+                                value={manualId}
+                                onChange={(e) => setManualId(e.target.value)}
+                            />
+                            <Button onClick={handleManualUnlock} disabled={!manualId}>Unlock</Button>
+                        </div>
+                    </div>
+                </Modal>
+            );
+        };
+
+        // --- UPGRADED TOP UP MODAL WITH PAYMENT GATEWAY ---
+        const TopUpModal = ({ onClose }) => {
+            const { dispatch } = useContext(AppContext);
+            const [step, setStep] = useState('select'); // select, method, process
+            const [selectedPack, setSelectedPack] = useState(null);
+            const [paymentMethod, setPaymentMethod] = useState('');
+            const [isProcessing, setIsProcessing] = useState(false);
+            const [customAmount, setCustomAmount] = useState(''); // NEW: Custom Value
+
+            // Payment Form State
+            const [cardDetails, setCardDetails] = useState({ number: '', exp: '', cvc: '' });
+
+            const handleSelectPack = (amount, bonus) => {
+                setSelectedPack({ amount, bonus });
+                setStep('method');
+            };
+
+            const processPayment = () => {
+                if (paymentMethod === 'card' && (!cardDetails.number || !cardDetails.exp || !cardDetails.cvc)) {
+                    dispatch({type: 'TOAST', payload: {msg: 'Please fill in card details', type: 'error'}});
+                    playSound('error');
+                    return;
+                }
+                
+                setStep('process');
+                setIsProcessing(true);
+
+                // Simulate Network Delay
+                setTimeout(() => {
+                    setIsProcessing(false);
+                    // FIXED: Ensure numeric addition in Reducer
+                    dispatch({type: 'TOP_UP', payload: { amount: selectedPack.amount, bonus: selectedPack.bonus }});
+                    dispatch({type: 'TOAST', payload: {msg: 'Payment Successful!', type: 'success'}});
+                    onClose();
+                }, 2000);
+            };
+
+            return (
+                 <Modal title={step === 'select' ? "Credit & Rewards" : "Payment Gateway"} onClose={onClose} isOpen={true} className="max-w-sm">
+                     {step === 'select' && (
+                        <div className="animate-enter">
+                            <h4 className="font-bold mb-2">Select Credit Pack</h4>
+                            <div className="space-y-2 mb-6">
+                                <Button variant="secondary" className="w-full justify-between" onClick={() => handleSelectPack(100, 10)}><span>100৳ Credit</span> <span className="text-green-400">+10৳ Bonus</span></Button>
+                                <Button variant="secondary" className="w-full justify-between" onClick={() => handleSelectPack(300, 50)}><span>300৳ Credit</span> <span className="text-green-400">+50৳ Bonus</span></Button>
+                                <Button variant="secondary" className="w-full justify-between" onClick={() => handleSelectPack(500, 100)}><span>500৳ Credit</span> <span className="text-green-400">+100৳ Bonus</span></Button>
+                            </div>
+                            
+                            {/* CUSTOM AMOUNT INPUT */}
+                            <div className="mb-6">
+                                <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Or Enter Custom Amount</label>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="number" 
+                                        className="flex-1 bg-black/30 border border-gray-700 rounded-lg p-2 text-sm focus:border-du-primary outline-none" 
+                                        placeholder="e.g. 50" 
+                                        value={customAmount}
+                                        onChange={e => setCustomAmount(e.target.value)}
+                                    />
+                                    <Button 
+                                        className="py-2 px-4" 
+                                        disabled={!customAmount || parseInt(customAmount) < 10} 
+                                        onClick={() => handleSelectPack(parseInt(customAmount), 0)}
+                                    >
+                                        Go
+                                    </Button>
+                                </div>
+                            </div>
+
+                            <h4 className="font-bold mb-2 pt-4 border-t border-gray-800">Referral System</h4>
+                            <p className="text-xs text-gray-400 mb-4">Invite a friend to PentaRideX and both get 50৳ credit!</p>
+                            <Button className="w-full" onClick={() => dispatch({type:'REFER_FRIEND'})} icon="users">Simulate Friend Joined (+50৳)</Button>
+                        </div>
+                     )}
+
+                     {step === 'method' && (
+                         <div className="animate-roll">
+                             <div className="flex justify-between items-center bg-black/30 p-3 rounded-xl mb-4">
+                                 <span className="text-gray-400">Total Payable:</span>
+                                 <span className="text-2xl font-bold text-du-primary">{formatMoney(selectedPack.amount)}</span>
+                             </div>
+
+                             <h4 className="text-sm font-bold text-gray-500 uppercase mb-3">Select Method</h4>
+                             
+                             {/* Payment Method Grid */}
+                             <div className="space-y-3 mb-4">
+                                 {/* Card Option */}
+                                 <div onClick={() => setPaymentMethod('card')} className={`p-3 rounded-xl border cursor-pointer transition flex items-center gap-3 ${paymentMethod === 'card' ? 'bg-du-primary/20 border-du-primary text-white' : 'border-gray-700 text-gray-400 hover:border-gray-500'}`}>
+                                     <Icon name="credit-card" size={20} /> <span className="font-bold">Credit/Debit Card</span>
+                                 </div>
+
+                                 {/* Mobile Banking Options Grid */}
+                                 <div className="grid grid-cols-2 gap-2">
+                                     <div onClick={() => setPaymentMethod('bkash')} className={`p-3 rounded-xl border cursor-pointer transition flex items-center justify-center gap-2 ${paymentMethod === 'bkash' ? 'bg-pink-600 text-white border-pink-400' : 'border-gray-700 text-gray-400 hover:border-gray-500 bg-black/20'}`}>
+                                         <span className="font-bold text-sm">bKash</span>
+                                     </div>
+                                     <div onClick={() => setPaymentMethod('nagad')} className={`p-3 rounded-xl border cursor-pointer transition flex items-center justify-center gap-2 ${paymentMethod === 'nagad' ? 'bg-orange-600 text-white border-orange-400' : 'border-gray-700 text-gray-400 hover:border-gray-500 bg-black/20'}`}>
+                                         <span className="font-bold text-sm">Nagad</span>
+                                     </div>
+                                     <div onClick={() => setPaymentMethod('rocket')} className={`p-3 rounded-xl border cursor-pointer transition flex items-center justify-center gap-2 ${paymentMethod === 'rocket' ? 'bg-purple-600 text-white border-purple-400' : 'border-gray-700 text-gray-400 hover:border-gray-500 bg-black/20'}`}>
+                                         <span className="font-bold text-sm">Rocket</span>
+                                     </div>
+                                     <div onClick={() => setPaymentMethod('upay')} className={`p-3 rounded-xl border cursor-pointer transition flex items-center justify-center gap-2 ${paymentMethod === 'upay' ? 'bg-blue-600 text-white border-blue-400' : 'border-gray-700 text-gray-400 hover:border-gray-500 bg-black/20'}`}>
+                                         <span className="font-bold text-sm">Upay</span>
+                                     </div>
+                                 </div>
+                             </div>
+
+                             {paymentMethod === 'card' && (
+                                 <div className="space-y-3 mb-4 bg-white/5 p-3 rounded-xl border border-white/10">
+                                     <input className="w-full bg-black/50 border border-gray-600 rounded-lg p-2 text-sm" placeholder="Card Number (4242...)" value={cardDetails.number} onChange={e => setCardDetails({...cardDetails, number: e.target.value})} />
+                                     <div className="flex gap-3">
+                                         <input className="flex-1 bg-black/50 border border-gray-600 rounded-lg p-2 text-sm" placeholder="MM/YY" value={cardDetails.exp} onChange={e => setCardDetails({...cardDetails, exp: e.target.value})} />
+                                         <input className="w-20 bg-black/50 border border-gray-600 rounded-lg p-2 text-sm" placeholder="CVC" value={cardDetails.cvc} onChange={e => setCardDetails({...cardDetails, cvc: e.target.value})} />
+                                     </div>
+                                 </div>
+                             )}
+
+                             {['bkash', 'nagad', 'rocket', 'upay'].includes(paymentMethod) && (
+                                 <div className="p-4 text-center text-sm text-gray-400 bg-white/5 rounded-xl mb-4 border border-white/10 animate-enter">
+                                     Redirecting to <span className="font-bold text-white capitalize">{paymentMethod}</span> Gateway... <br/> (Simulated)
+                                 </div>
+                             )}
+
+                             <Button className="w-full" disabled={!paymentMethod} onClick={processPayment}>Pay Now</Button>
+                             <button onClick={() => setStep('select')} className="w-full text-center text-xs text-gray-500 mt-3 hover:text-white">Cancel</button>
+                         </div>
+                     )}
+
+                     {step === 'process' && (
+                         <div className="flex flex-col items-center justify-center py-8">
+                             <div className="w-12 h-12 border-4 border-du-primary border-t-transparent rounded-full animate-spin-slow mb-4"></div>
+                             <h4 className="font-bold text-lg animate-pulse">Processing Payment...</h4>
+                             <p className="text-xs text-gray-500">Do not close this window</p>
+                         </div>
+                     )}
+                 </Modal>
+            );
+        };
+
+        // --- RIDE CONFIRMATION MODAL ---
+        const RideConfirmModal = ({ data, onConfirm, onCancel, insurance, toggleInsurance }) => {
+            return (
+                <Modal title="Confirm Ride Details" isOpen={true} onClose={onCancel}>
+                    <div className="space-y-4">
+                        <div className="bg-black/30 p-4 rounded-xl border border-gray-700">
+                            <div className="flex justify-between border-b border-gray-700 pb-2 mb-2">
+                                <span className="text-gray-400 text-sm">Bike ID</span>
+                                <span className="font-bold text-du-primary text-xl">{data.BikeNo}</span>
+                            </div>
+                            <div className="flex justify-between border-b border-gray-700 pb-2 mb-2">
+                                <span className="text-gray-400 text-sm">Station</span>
+                                <span className="font-bold text-white text-sm">{data.PresentStation}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-400 text-sm">Owner Reg</span>
+                                <span className="font-mono text-xs text-gray-500">{data.Owner}</span>
+                            </div>
+                        </div>
+
+                        <label className="flex items-center justify-between bg-black/30 p-3 rounded-xl cursor-pointer hover:bg-black/40 transition">
+                            <span className="text-sm flex items-center gap-2"><Icon name="shield" size={16} className="text-green-400"/> Ride Insurance</span>
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs text-gray-400">+5৳</span>
+                                <input type="checkbox" checked={insurance} onChange={toggleInsurance} className="accent-du-primary h-5 w-5" />
+                            </div>
+                        </label>
+
+                        <div className="flex gap-3 mt-4">
+                            <Button variant="secondary" className="flex-1" onClick={onCancel}>Cancel</Button>
+                            <Button className="flex-1" onClick={onConfirm} icon="check">Start Ride</Button>
+                        </div>
+                    </div>
+                </Modal>
+            );
+        };
+
+        // --------------------------------------------------------------------------------
+        // 3. PAGES & SECTIONS
+        // --------------------------------------------------------------------------------
+
+        // --- LANDING PAGE ---
+        const Landing = () => {
+            const nav = useNavigate();
+            
+            // Custom Cursor Follow Effect
+            useEffect(() => {
+                const moveCursor = (e) => {
+                    const c = document.getElementById('cursor-glow');
+                    if(c) { c.style.left = e.clientX + 'px'; c.style.top = e.clientY + 'px'; }
+                };
+                window.addEventListener('mousemove', moveCursor);
+                return () => window.removeEventListener('mousemove', moveCursor);
+            }, []);
+            
+            const Header = () => (
+                <nav className="glass-heavy fixed top-0 w-full z-40 p-4 border-b border-white/10">
+                    <div className="container mx-auto flex justify-between items-center">
+                        <h1 className="text-2xl font-bold text-du-primary">PentaRideX <span className="text-sm text-white/50">v7.5</span></h1>
+                        <div className="hidden md:flex space-x-6 text-sm">
+                            <a href="#about" className="hover:text-du-primary transition">About</a>
+                            <a href="#process" className="hover:text-du-primary transition">Process</a>
+                            <a href="#whyus" className="hover:text-du-primary transition">Why Us</a>
+                            <a href="#contact" className="hover:text-du-primary transition">Contact</a>
+                        </div>
+                        <Button className="py-2 px-4 text-sm" onClick={() => nav('/auth?role=rider')}>Login</Button>
+                    </div>
+                </nav>
+            );
+
+            const Footer = () => (
+                <footer className="bg-black/20 border-t border-gray-800 p-8 text-center text-sm text-gray-500">
+                    <p>&copy; {CURRENT_YEAR} PentaRideX v7.5. Built with 💜 for Dhaka University.</p>
+                    <p className="mt-2 text-xs">A world-class premium, single-file SPA.</p>
+                </footer>
+            );
+
+            const HeroSection = () => (
+                <div id="hero" className="min-h-screen relative flex items-center justify-center pt-24 pb-12 bg-du-dark overflow-hidden z-10">
+                    <div className="z-10 container mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
+                        <div className="flex-1 text-center md:text-left space-y-6 animate-enter">
+                            <div className="inline-block px-4 py-1 rounded-full bg-du-primary/10 border border-du-primary/20 text-du-primary text-sm font-bold tracking-widest uppercase mb-4">
+                                Unicorn Edition
+                            </div>
+                            <h1 className="text-6xl md:text-7xl font-bold leading-tight tracking-tighter">
+                                Campus Ride, <span className="text-transparent bg-clip-text bg-gradient-to-r from-du-primary to-red-500">Refined.</span>
+                            </h1>
+                            <p className="text-xl text-gray-400 max-w-lg mx-auto md:mx-0 font-light">
+                                Dhaka University's next-generation, premium bike sharing ecosystem powered by **Advanced Logic**.
+                            </p>
+                            <div className="flex flex-col md:flex-row gap-4 justify-center md:justify-start pt-4">
+                                <Button onClick={() => nav('/auth?role=rider')} className="px-8 py-4 text-lg" icon="bike">Start Riding</Button>
+                                <Button variant="secondary" onClick={() => nav('/auth?role=owner')} className="px-8 py-4 text-lg" icon="briefcase">Become Owner</Button>
+                            </div>
+                            <p className="text-xs text-gray-600 mt-8 cursor-pointer hover:text-du-primary transition" onClick={() => nav('/auth?role=admin')}>
+                                Staff & Admin Access
+                            </p>
+                        </div>
+                        {/* 3D Hero Element (CSS Animation) */}
+                        <div className="flex-1 flex justify-center perspective-1000 mt-10 md:mt-0">
+                            <div className="hero-bike animate-float relative w-[350px] h-[350px] bg-gradient-to-b from-du-blue/30 to-transparent rounded-full flex items-center justify-center border border-white/5 backdrop-blur-sm shadow-2xl">
+                                <div className="text-du-primary drop-shadow-2xl filter transform rotate-12 transition hover:rotate-0 duration-500">
+                                    <Icon name="bike" size={180} />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+            
+            const Section = ({ id, title, children }) => (
+                <div id={id} className="container mx-auto px-4 py-20 z-10 relative">
+                    <h2 className="text-4xl font-extrabold text-center mb-12 text-du-primary border-b-2 border-du-primary/30 pb-4">{title}</h2>
+                    {children}
+                </div>
+            );
+
+            return (
+                <div className="bg-du-dark min-h-screen">
+                    <Header />
+                    <HeroSection />
+                    
+                    <hr className="border-gray-800"/>
+
+                    <Section id="about" title="About PentaRideX">
+                        <div className="glass-card p-8 rounded-3xl text-center space-y-4">
+                            <p className="text-lg text-gray-300">PentaRideX v7 is designed from the ground up to solve campus transit challenges at DU. We focus on **reliability, security, and premium user experience**.</p>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6">
+                                <div className="p-4 bg-white/5 rounded-xl"><Icon name="shield-check" className="text-green-400 mx-auto mb-2" size={32}/><p className="font-bold">Military-Grade Auth</p></div>
+                                <div className="p-4 bg-white/5 rounded-xl"><Icon name="zap" className="text-du-primary mx-auto mb-2" size={32}/><p className="font-bold">Peak Hour Logic</p></div>
+                                <div className="p-4 bg-white/5 rounded-xl"><Icon name="battery-charging" className="text-blue-400 mx-auto mb-2" size={32}/><p className="font-bold">Battery Monitoring</p></div>
+                            </div>
+                        </div>
+                    </Section>
+                    
+                    <Section id="process" title="The PentaRideX Process">
+                        <ol className="md:flex justify-between space-y-8 md:space-y-0 text-center">
+                            <li className="flex-1 space-y-2">
+                                <div className="w-16 h-16 bg-du-primary/20 border-4 border-du-primary rounded-full flex items-center justify-center text-du-primary text-xl font-bold mx-auto mb-4">1</div>
+                                <h4 className="font-bold text-lg">Scan & Go</h4>
+                                <p className="text-sm text-gray-400 max-w-xs mx-auto">Use the in-app QR scanner to unlock any available bike instantly.</p>
+                            </li>
+                            <li className="flex-1 space-y-2">
+                                <div className="w-16 h-16 bg-du-primary/20 border-4 border-du-primary rounded-full flex items-center justify-center text-du-primary text-xl font-bold mx-auto mb-4">2</div>
+                                <h4 className="font-bold text-lg">Insured Ride</h4>
+                                <p className="text-sm text-gray-400 max-w-xs mx-auto">Toggle Ride Insurance (+5৳) for zero late penalties.</p>
+                            </li>
+                            <li className="flex-1 space-y-2">
+                                <div className="w-16 h-16 bg-du-primary/20 border-4 border-du-primary rounded-full flex items-center justify-center text-du-primary text-xl font-bold mx-auto mb-4">3</div>
+                                <h4 className="font-bold text-lg">Park & Rate</h4>
+                                <p className="text-sm text-gray-400 max-w-xs mx-auto">Return to any station, lock the bike, and rate your experience (1-5 stars).</p>
+                            </li>
+                        </ol>
+                    </Section>
+                    
+                    <Section id="whyus" title="Why PentaRideX is Different">
+                        <div className="grid md:grid-cols-2 gap-8 text-gray-300">
+                            <div className="glass-card p-6 rounded-2xl space-y-3">
+                                <Icon name="trending-up" className="text-green-400" size={32}/>
+                                <h4 className="font-bold text-lg">Revenue Sharing</h4>
+                                <p className="text-sm">75% of ride earnings go directly to the bike owners, fostering a strong micro-economy on campus.</p>
+                            </div>
+                            <div className="glass-card p-6 rounded-2xl space-y-3">
+                                <Icon name="map-pin" className="text-red-400" size={32}/>
+                                <h4 className="font-bold text-lg">Heatmap & Boosting</h4>
+                                <p className="text-sm">Owners can view demand heatmaps and pay 20৳ to 'Boost' their bike to high-demand stations (Admin approved).</p>
+                            </div>
+                            <div className="glass-card p-6 rounded-2xl space-y-3">
+                                <Icon name="user-check" className="text-du-primary" size={32}/>
+                                <h4 className="font-bold text-lg">User Transparency</h4>
+                                <p className="text-sm">Admin dashboard monitors all activities, flags fraud users (&gt;3 late returns), and allows system-wide announcements.</p>
+                            </div>
+                            <div className="glass-card p-6 rounded-2xl space-y-3">
+                                <Icon name="gift" className="text-yellow-400" size={32}/>
+                                <h4 className="font-bold text-lg">Additive Rewards</h4>
+                                <p className="text-sm">Referral bonuses (50৳ each), ride streaks, and credit pack bonuses make the experience addictive.</p>
+                            </div>
+                        </div>
+                    </Section>
+
+                    <Section id="contact" title="Get in Touch">
+                        <div className="glass-card p-8 rounded-3xl max-w-xl mx-auto space-y-4">
+                            <p className="text-center text-gray-400">For support, partnerships, or academic inquiries, please reach out.</p>
+                            <form className="space-y-4">
+                                <input type="text" placeholder="Your Name" className="w-full bg-black/30 border border-gray-700 rounded-lg p-3"/>
+                                <input type="email" placeholder="Your @du.ac.bd Email" className="w-full bg-black/30 border border-gray-700 rounded-lg p-3"/>
+                                <textarea placeholder="Your Message" rows="4" className="w-full bg-black/30 border border-gray-700 rounded-lg p-3"></textarea>
+                                <Button className="w-full" onClick={(e) => { e.preventDefault(); dispatch({type:'TOAST', payload: {msg: 'Message simulatedly sent!', type: 'success'}}); }}>Send Inquiry</Button>
+                            </form>
+                        </div>
+                    </Section>
+                    
+                    <Footer />
+                </div>
+            );
+        };
+
+        // --- AUTH PAGE (MILITARY GRADE VALIDATION) ---
+        const Auth = () => {
+            const { search } = useLocation();
+            const initialRole = new URLSearchParams(search).get('role') || 'rider';
+            const { state, dispatch } = useContext(AppContext);
+            const nav = useNavigate();
+            
+            const [role, setRole] = useState(initialRole);
+            const [isReg, setIsReg] = useState(false);
+            const [form, setForm] = useState({ email: '', pass: '', reg: '', session: SESSIONS[SESSIONS.length-1], dept: DEPTS[0], name: '' });
+            const [errors, setErrors] = useState({});
+            const [strength, setStrength] = useState(0);
+
+            // Validation Logic
+            const validate = () => {
+                let err = {};
+                
+                // 1. Email Domain (Bypassed for seeded accounts)
+                const isSeeded = ['rider@test.com', 'owner@test.com', 'admin@prx.com'].includes(form.email);
+// Regex for DU format: name-reg@dept.du.ac.bd
+    // Breakdown: Any Name + Hyphen + Any Digits + @ + Any Dept + .du.ac.bd
+    const duPattern = /^.+-\d+@.+\.du\.ac\.bd$/;
+
+    if (!isSeeded && !duPattern.test(form.email)) {
+        err.email = "Must use official DU email format (e.g., name-reg@dept.du.ac.bd)";
+    }                
+                if (isReg) {
+                    // 2. Reg No Matching Session
+                    if (role !== 'admin' && form.reg && form.session) {
+                        const sessionYear = form.session.split('-')[0]; // e.g., "2024"
+                        if (form.reg.length !== 10 || !/^\d{10}$/.test(form.reg)) err.reg = "Reg must be exactly 10 digits";
+                        else if (!form.reg.startsWith(sessionYear)) err.reg = `Reg must start with ${sessionYear} for this session`;
+                    }
+                    // 3. Password Strength
+                    if (form.pass.length < 8) err.pass = "Password must be >= 8 characters.";
+                    else if (!/\d/.test(form.pass)) err.pass = "Password must contain 1 number.";
+                    else if (!/[!@#$%^&*]/.test(form.pass)) err.pass = "Password must contain 1 symbol (!@#$...).";
+                }
+                setErrors(err);
+                return Object.keys(err).length === 0;
+            };
+
+            const checkStrength = (p) => {
+                let s = 0;
+                if(p.length >= 8) s++;
+                if(/\d/.test(p)) s++;
+                if(/[!@#$%^&*]/.test(p)) s++;
+                setStrength(s);
+            };
+
+            const handleSubmit = async () => {
+  if(!validate()) { playSound('error'); return; }
+
+  if (isReg) {
+    const newUser = { 
+      ...form, 
+      role, 
+      balance: 100,
+      rideStreak: 0, 
+      isBanned: false,
+      badges: []
+    };
+    
+    let firebaseSuccess = false;
+    if (firebaseService.isInitialized) {
+      firebaseSuccess = await firebaseService.registerUser(newUser);
+    }
+    
+    if (firebaseSuccess) {
+      dispatch({ type: 'REGISTER', payload: newUser });
+      dispatch({ type: 'TOAST', payload: { msg: 'Account Created Successfully in Firebase!', type: 'success' }});
+      setIsReg(false);
+    } else {
+      dispatch({ type: 'REGISTER', payload: newUser });
+      dispatch({ type: 'TOAST', payload: { msg: 'Account Created (Local Storage Only)', type: 'warning' }});
+      setIsReg(false);
+    }
+  } else {
+    let user = null;
+    
+    if (firebaseService.isInitialized) {
+      user = await firebaseService.loginUser(form.email, form.pass);
+    }
+    
+    if (!user) {
+      user = state.db.users.find(u => u.email === form.email && u.pass === form.pass && u.role === role);
+    }
+    
+    if(user && !user.isBanned) {
+      if (firebaseService.isInitialized) {
+        await firebaseService.updateUser(user);
+      }
+      
+      dispatch({ type: 'LOGIN', payload: user });
+      nav(`/${role}`);
+    } else if (user && user.isBanned) {
+      dispatch({ type: 'TOAST', payload: { msg: 'Account is banned by Admin!', type: 'error' }});
+      playSound('error');
+    } else {
+      dispatch({ type: 'TOAST', payload: { msg: `Invalid Credentials or Role Mismatch for ${role}`, type: 'error' }});
+      playSound('error');
+    }
+  }
+};
+            
+            const autoFill = () => {
+                const map = {
+                    'rider': { email: 'rider@test.com', pass: '123' }, 
+                    'owner': { email: 'owner@test.com', pass: '123' }, 
+                    'admin': { email: 'admin@prx.com', pass: '123' }
+                };
+                setForm({...form, email: map[role].email, pass: map[role].pass });
+                dispatch({ type: 'TOAST', payload: { msg: `Auto-filled: ${map[role].email} / ${map[role].pass}`, type: 'success' }});
+            };
+
+            const sessionYear = form.session ? form.session.split('-')[0] : '2024';
+
+            return (
+                <div className="min-h-screen flex items-center justify-center bg-du-dark relative p-4">
+                    <div className="glass w-full max-w-lg p-8 rounded-3xl relative z-10 shadow-2xl border-t border-white/10">
+                        <div className="text-center mb-8">
+                            <Icon name={role === 'rider' ? 'bike' : role === 'owner' ? 'briefcase' : 'shield'} size={48} className="mx-auto text-du-primary mb-4" />
+                            <h2 className="text-3xl font-bold capitalize">{isReg ? 'DU Registration' : `PentaRideX Access`}</h2>
+                            <p className="text-gray-400 text-sm mt-2">{isReg ? 'Create your new DU account' : 'Select your login role'}</p>
+                        </div>
+                        
+                        {/* Role Tabs */}
+                        <div className="flex bg-black/30 p-1 rounded-xl mb-6">
+                            {['rider', 'owner', 'admin'].map(r => (
+                                <button key={r} onClick={() => setRole(r)} className={`flex-1 py-2 text-sm font-semibold rounded-lg capitalize transition ${role === r ? 'bg-du-primary text-du-dark shadow-lg' : 'text-gray-400 hover:text-white'}`}>
+                                    {r}
+                                </button>
+                            ))}
+                        </div>
+
+                        <div className="space-y-4">
+                            {isReg && (
+                                <div>
+                                    <label className="text-xs font-bold text-gray-500 uppercase ml-1">Full Name</label>
+                                    <input className="w-full bg-black/30 border border-gray-700 rounded-xl p-3 focus:border-du-primary outline-none transition" 
+                                        value={form.name} onChange={e => setForm({...form, name: e.target.value})} placeholder="Full Name" />
+                                </div>
+                            )}
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Official Email</label>
+                                <input className="w-full bg-black/30 border border-gray-700 rounded-xl p-3 focus:border-du-primary outline-none transition" 
+                                    value={form.email} onChange={e => { setForm({...form, email: e.target.value}); delete errors.email; }} placeholder="user@student.du.ac.bd" />
+                                {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                            </div>
+                            
+                            <div>
+                                <label className="text-xs font-bold text-gray-500 uppercase ml-1">Password</label>
+                                <input type="password" className="w-full bg-black/30 border border-gray-700 rounded-xl p-3 focus:border-du-primary outline-none transition" 
+                                    value={form.pass} onChange={e => { setForm({...form, pass: e.target.value}); if(isReg) checkStrength(e.target.value); delete errors.pass; }} />
+                                {isReg && (
+                                    <div className="flex gap-1 mt-2 h-1 items-center">
+                                        {[1,2,3].map(i => <div key={i} className={`flex-1 rounded-full ${strength >= i ? 'bg-green-500' : 'bg-gray-700'}`}></div>)}
+                                        <p className="text-[10px] text-gray-500 ml-2">{strength === 3 ? 'Strong' : strength === 2 ? 'Medium' : 'Weak'}</p>
+                                    </div>
+                                )}
+                                {errors.pass && <p className="text-red-500 text-xs mt-1">{errors.pass}</p>}
+                            </div>
+
+                            {isReg && role !== 'admin' && (
+                                <div className="grid grid-cols-2 gap-4 animate-roll">
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Session</label>
+                                        <select className="w-full bg-black/30 border border-gray-700 rounded-xl p-3" value={form.session} onChange={e => { setForm({...form, session:e.target.value}); delete errors.reg; }}>
+                                            {SESSIONS.map(s => <option key={s}>{s}</option>)}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Reg No</label>
+                                        <input type="number" className="w-full bg-black/30 border border-gray-700 rounded-xl p-3" 
+                                               value={form.reg} 
+                                               onChange={e => { setForm({...form, reg:e.target.value}); delete errors.reg; }} 
+                                               placeholder={`${sessionYear}xxxxxx`} 
+                                               maxLength={10} />
+                                        {errors.reg && <p className="text-red-500 text-xs mt-1 absolute">{errors.reg}</p>}
+                                    </div>
+                                    <div className="col-span-2">
+                                        <label className="text-xs font-bold text-gray-500 uppercase">Department</label>
+                                        <select className="w-full bg-black/30 border border-gray-700 rounded-xl p-3" value={form.dept} onChange={e => setForm({...form, dept: e.target.value})}>
+                                            {DEPTS.map(d => <option key={d}>{d}</option>)}
+                                        </select>
+                                    </div>
+                                </div>
+                            )}
+
+                            <Button onClick={handleSubmit} className="w-full mt-6">{isReg ? 'Finalize Registration' : `Login as ${role}`}</Button>
+                            
+                            {!isReg && <p onClick={autoFill} className="text-center text-xs text-gray-500 cursor-pointer hover:text-white mt-4">Tap to auto-fill demo credentials for **{role}**</p>}
+
+                            <div className="mt-4 text-center text-sm text-gray-400">
+                                {isReg ? "Have an ID?" : "First time?"} 
+                                <span onClick={() => setIsReg(!isReg)} className="text-du-primary font-bold cursor-pointer ml-2 hover:underline">
+                                    {isReg ? "Login" : "Register Now"}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        // --- RIDER DASHBOARD ---
+        const RiderDash = () => {
+            const { state, dispatch } = useContext(AppContext);
+            const [selectedStation, setSelectedStation] = useState(null);
+            const [scanMode, setScanMode] = useState(false);
+            const [insurance, setInsurance] = useState(false);
+            const [isRating, setIsRating] = useState(false);
+            const [isTopUp, setIsTopUp] = useState(false);
+            const [pendingRide, setPendingRide] = useState(null); // New state for confirmation modal
+            
+            const activeRide = state.db.rides.find(r => r.userId === state.user.email && r.status === 'ongoing');
+            const totalBalance = useAnimatedCounter(state.user.balance, 1000);
+            
+            const userLat = 23.7335 + (Math.random() - 0.5) * 0.001;
+            const userLng = 90.3905 + (Math.random() - 0.5) * 0.001;
+            
+            const availableBikes = useMemo(() => state.db.bikes.filter(b => b.status === 'available'), [state.db.bikes]);
+            
+            const recommendedStation = useMemo(() => {
+                if(availableBikes.length === 0) return null;
+                
+                const stationStats = STATIONS.map(s => {
+                    const bikesAtStation = availableBikes.filter(b => b.stationId === s.id).length;
+                    const distance = dist(userLat, userLng, s.lat, s.lng);
+                    return { ...s, bikes: bikesAtStation, distance, score: (bikesAtStation * 2) - distance };
+                });
+                
+                return stationStats.sort((a, b) => b.score - a.score)[0];
+            }, [availableBikes]);
+
+            const handleScan = (decodedText) => {
+                setScanMode(false);
+                let rideData = null;
+
+                try {
+                    // Try parsing JSON format first
+                    const parsed = JSON.parse(decodedText);
+                    if(parsed.BikeNo) {
+                        rideData = parsed;
+                    }
+                } catch(e) {
+                    // Fallback to old string format
+                    const bikeId = decodedText.includes('bike_') ? decodedText.split('_')[1] : decodedText;
+                    rideData = { BikeNo: bikeId, PresentStation: 'Unknown (Legacy)', Owner: 'Unknown' };
+                }
+                
+                if(rideData) {
+                    setPendingRide(rideData); // Open Confirmation Modal
+                } else {
+                    dispatch({ type: 'TOAST', payload: { msg: 'Invalid QR Code Format', type: 'error' } });
+                    playSound('error');
+                }
+            };
+
+            const confirmRide = () => {
+                if(!pendingRide) return;
+                const bikeId = pendingRide.BikeNo;
+                setPendingRide(null);
+                
+                dispatch({ type: 'START_RIDE', payload: { bikeId, userId: state.user.email, withInsurance: insurance } });
+            };
+            
+            const handleEndRide = (stationId) => {
+                setSelectedStation(STATIONS.find(s => s.id === stationId));
+                setIsRating(true);
+            };
+            
+            const handleRatingSubmit = (rating) => {
+                setIsRating(false);
+                dispatch({ type: 'END_RIDE', payload: { stationId: selectedStation.id, rating } });
+                dispatch({ type: 'TOAST', payload: { msg: `Ride ended! Rated ${rating} stars.`, type: 'success' } });
+            };
+            
+            const handleQuickRide = () => {
+                const availableBike = availableBikes.filter(b => b.stationId === recommendedStation?.id)[0];
+                if(availableBike) {
+                    // Auto-construct ride data for quick ride
+                    const mockData = { BikeNo: availableBike.id, PresentStation: recommendedStation.name, Owner: 'System Auto-Assign' };
+                    setPendingRide(mockData);
+                } else {
+                    dispatch({ type: 'TOAST', payload: { msg: 'No bikes nearby for Quick Ride.', type: 'error' } });
+                }
+            };
+            
+            const handleSOS = () => {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition((pos) => {
+                        const loc = `Lat: ${pos.coords.latitude.toFixed(4)}, Lng: ${pos.coords.longitude.toFixed(4)}`;
+                        dispatch({ type: 'TOAST', payload: { msg: `SOS sent (Location: ${loc})! Admin notified.`, type: 'error' }});
+                    }, () => {
+                        dispatch({ type: 'TOAST', payload: { msg: `SOS sent (Location: DU Campus)! Admin notified.`, type: 'error' }});
+                    });
+                } else {
+                     dispatch({ type: 'TOAST', payload: { msg: `SOS sent (Location: DU Campus)! Admin notified.`, type: 'error' }});
+                }
+            };
+
+
+            const RiderStats = () => (
+                <div className="glass-card p-4 rounded-xl space-y-3">
+                    <h4 className="font-bold text-lg flex items-center justify-between">
+                        Ride Perks <Icon name="zap" className="text-du-primary" size={18}/>
+                    </h4>
+                    
+                    <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">Ride Streak:</span>
+                        <span className="font-bold text-du-primary flex items-center gap-1">
+                            {state.user.rideStreak || 0} days
+                            {state.user.badges?.includes('gold') ? <Icon name="award" className="text-yellow-500" size={16}/> : state.user.badges?.includes('bronze') ? <Icon name="award" className="text-amber-700" size={16}/> : ''}
+                        </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between text-sm">
+                        <span className="text-gray-400">People Riding Now:</span>
+                        <span className="font-bold text-green-400">{state.db.rides.filter(r => r.status === 'ongoing').length + 50}</span>
+                    </div>
+                    
+                    {recommendedStation && (
+                        <div className="pt-2 border-t border-gray-800">
+                            <h5 className="text-xs uppercase text-gray-500 font-bold mb-1">Recommended Station</h5>
+                            <span className="text-sm font-semibold flex items-center gap-1">
+                                <Icon name="map-pin" size={16} className="text-red-500" />
+                                {recommendedStation.name} ({availableBikes.filter(b => b.stationId === recommendedStation.id).length} bikes)
+                            </span>
+                        </div>
+                    )}
+                </div>
+            );
+
+            // Rating Modal
+            const RatingModal = () => (
+                <Modal title={`Rate Bike ${activeRide?.bikeId}`} onClose={() => setIsRating(false)} isOpen={isRating}>
+                    <p className="text-gray-400 mb-4">How was your experience at **{selectedStation?.name}**?</p>
+                    <div className="flex justify-center gap-2 mb-6">
+                        {[1, 2, 3, 4, 5].map(star => (
+                            <button key={star} onClick={() => handleRatingSubmit(star)} className="p-3 text-du-primary hover:scale-110 transition active:scale-95">
+                                <Icon name="star" size={32} fill={star <= (activeRide?.rating || 0) ? '#fbbf24' : 'none'}/>
+                            </button>
+                        ))}
+                    </div>
+                    <Button variant="secondary" className="w-full" onClick={() => handleRatingSubmit(5)}>Submit Rating</Button>
+                </Modal>
+            );
+            
+            return (
+                <div className="h-screen flex flex-col bg-du-dark relative">
+                    {/* Top Bar (Header) */}
+                    <div className="glass-heavy px-4 py-3 flex justify-between items-center z-20">
+                        {state.loading ? <Skeleton className="h-10 w-40"/> : (
+                            <div className="flex items-center gap-3">
+                                <div>
+                                    <h3 className="font-bold text-sm leading-tight">Balance</h3>
+                                    <div className="text-lg text-du-primary font-mono font-extrabold flex items-center gap-1">
+                                        <Icon name="wallet" size={18} /> {formatMoney(totalBalance)}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <Button variant="secondary" className="px-3 py-1 text-xs" onClick={() => dispatch({type:'LOGOUT'})}>Logout</Button>
+                    </div>
+                    
+                    {/* Map & Overlays */}
+                    <div className="flex-1 relative">
+                        {state.loading ? <Skeleton className="w-full h-full rounded-none" /> : <MapComponent bikes={state.db.bikes} onStationClick={setSelectedStation} />}
+                        
+                        {/* Dynamic Pricing Banner */}
+                        {state.db.config.peakActive && isPeakHour() && (
+                            <div className="absolute top-4 left-1/2 -translate-x-1/2 z-[400] glass bg-red-900/40 px-3 py-1 rounded-full text-xs font-bold animate-pulse-fast border-red-500/50">
+                                🚨 PEAK HOURS ACTIVE: +50% Rate
+                            </div>
+                        )}
+                        
+                        {/* Mobile Bottom Sheet (Controls & Stats) */}
+                        <div className={`fixed bottom-0 left-0 w-full z-[500] p-4 glass-heavy rounded-t-3xl transition-transform duration-300 md:static md:p-4 md:glass-heavy/0`}>
+                            {state.loading ? <Skeleton className="h-40 w-full" /> : activeRide ? (
+                                <div className="space-y-4">
+                                    <div className="glass-card border-l-4 border-l-green-500 p-5 rounded-xl animate-roll">
+                                        <div className="flex justify-between items-start mb-4">
+                                            <div>
+                                                <h3 className="text-lg font-bold text-green-400 flex items-center gap-2"><Icon name="bike" /> Ride Ongoing</h3>
+                                                <p className="text-xs text-gray-400 mt-1">Bike ID: {activeRide.bikeId} | {activeRide.insurance ? 'Insured' : 'No Insurance'}</p>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className="text-2xl font-mono font-bold text-white">{Math.floor((Date.now() - activeRide.startTime)/60000)} <span className="text-xs text-gray-400">min</span></div>
+                                                <p className="text-xs text-gray-500">~{formatMoney(25)} est. cost</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {/* Default End Station is TSC (ID 1) */}
+                                    <Button variant="danger" className="w-full" onClick={() => handleEndRide(1)}>End Ride & Lock (TSC)</Button> 
+                                    <Button variant="secondary" className="w-full" onClick={handleSOS} icon="siren">SOS Emergency Button</Button>
+                                </div>
+                            ) : (
+                                <div className="space-y-4">
+                                    <RiderStats />
+                                    
+                                    <div className="flex gap-3">
+                                        <Button className="flex-1 py-4 text-lg shadow-du-primary/20" onClick={() => state.user.balance > 0 ? setScanMode(true) : dispatch({type: 'TOAST', payload: {msg: 'Please top up your credit first!', type: 'error'}})} icon="qr-code" disabled={state.user.balance <= 0}>
+                                            Scan to Ride
+                                        </Button>
+                                        <Button className="flex-1 py-4 text-lg shadow-green-500/20" variant="secondary" onClick={handleQuickRide} icon="zap" disabled={!recommendedStation || state.user.balance <= 0}>
+                                            Quick Ride
+                                        </Button>
+                                    </div>
+                                    
+                                    <div className="flex items-center justify-between px-2 text-sm">
+                                        <label className="flex items-center gap-2 text-gray-400 cursor-pointer select-none">
+                                           <span className="text-sm">Default Ride Insurance (+5৳)</span>
+                                           <input type="checkbox" checked={insurance} onChange={e => setInsurance(e.target.checked)} className="accent-du-primary" />
+                                        </label>
+                                        <span className="text-du-primary cursor-pointer hover:underline" onClick={() => setIsTopUp(true)}>Top Up/Referral</span>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    {scanMode && <QRScanner onScanSuccess={handleScan} onClose={() => setScanMode(false)} onScanError={() => dispatch({type:'TOAST', payload: {msg: 'QR Scan Error. Try again.', type: 'error'}})} />}
+                    {isRating && <RatingModal />}
+                    {isTopUp && <TopUpModal onClose={() => setIsTopUp(false)} />}
+                    {pendingRide && <RideConfirmModal data={pendingRide} insurance={insurance} toggleInsurance={() => setInsurance(!insurance)} onConfirm={confirmRide} onCancel={() => setPendingRide(null)} />}
+                </div>
+            );
+        };
+
+        // --- OWNER DASHBOARD ---
+        const OwnerDash = () => {
+            const { state, dispatch } = useContext(AppContext);
+            const [selectedBike, setSelectedBike] = useState(null);
+            
+            const myBikes = useMemo(() => state.db.bikes.filter(b => b.ownerId === state.user.email), [state.db.bikes, state.user.email]);
+            const totalEarned = useMemo(() => myBikes.reduce((acc, b) => acc + b.earnings, 0), [myBikes]);
+            const animatedEarnings = useAnimatedCounter(totalEarned, 1500);
+            
+            // CSS-only Bar Chart for Revenue
+            const Chart = () => {
+                // Mock daily revenue for last 30 days based on bike earnings
+                const dailyRevenue = Array.from({length: 30}, (_, i) => {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    return state.db.rides
+                        .filter(r => new Date(r.endTime).toDateString() === date.toDateString())
+                        .map(r => r.cost * 0.75) // Only owner's share
+                        .reduce((acc, c) => acc + c, 0);
+                }).reverse(); // Latest day last
+
+                const maxRevenue = Math.max(...dailyRevenue, 1);
+                
+                return (
+                    <div className="h-32 flex items-end gap-[2px] mt-4 border-b border-gray-700 pb-1 overflow-hidden">
+                        {dailyRevenue.map((rev, i) => (
+                            <div key={i} className="flex-1 group relative h-full">
+                                <div 
+                                    style={{height: `${(rev / maxRevenue) * 95}%`}} 
+                                    className="w-full css-chart-bar bg-green-500/20 border-t border-green-500 rounded-t-sm hover:bg-green-500/40"
+                                ></div>
+                                {/* Tooltip Mock */}
+                                <span className="absolute bottom-full left-1/2 -translate-x-1/2 mb-1 p-1 bg-gray-900 rounded text-xs opacity-0 group-hover:opacity-100 transition duration-150 pointer-events-none">{formatMoney(rev)}</span>
+                            </div>
+                        ))}
+                    </div>
+                );
+            };
+            
+            const handleExportPDF = () => {
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(`
+                    <html><head><title>Earnings Report</title>
+                    <style>
+                        body { font-family: sans-serif; padding: 20px; color: #333; }
+                        h1 { color: #1e3a8a; }
+                        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                        .total { background-color: #fbbf24; font-weight: bold; }
+                    </style>
+                    </head><body>
+                    <h1>PentaRideX Earnings Report - ${state.user.name}</h1>
+                    <p>Generated: ${new Date().toLocaleDateString()}</p>
+                    <table>
+                        <thead><tr><th>Bike ID</th><th>Rides</th><th>Utilization</th><th>Owner Score</th><th>Lifetime Earnings</th></tr></thead>
+                        <tbody>
+                            ${myBikes.map(b => `<tr><td>${b.id}</td><td>${b.rides}</td><td>${b.utilization}%</td><td>${b.ownerRating.toFixed(2)}</td><td>${formatMoney(b.earnings)}</td></tr>`).join('')}
+                        </tbody>
+                        <tfoot>
+                            <tr class="total"><td colspan="4">TOTAL</td><td>${formatMoney(totalEarned)}</td></tr>
+                        </tfoot>
+                    </table>
+                    </body></html>
+                `);
+                printWindow.document.close();
+                printWindow.print();
+            };
+            
+            const BoostModal = () => (
+                <Modal title={`Boost Bike ${selectedBike.id}`} onClose={() => setSelectedBike(null)} isOpen={!!selectedBike}>
+                    <p className="text-gray-400 mb-4">Pay 20৳ to request moving this bike to a **High-Demand Station**.</p>
+                    <p className="font-bold text-sm mb-4">Current Balance: {formatMoney(state.user.balance)}</p>
+                    <select className="w-full bg-black/30 border border-gray-700 rounded-xl p-3 mb-4" id="targetStation">
+                        {STATIONS.map(s => (
+                            <option key={s.id} value={s.id}>{s.name} (ID: {s.id})</option>
+                        ))}
+                    </select>
+                    <Button 
+                        className="w-full" 
+                        onClick={() => {
+                            const targetStationId = parseInt(document.getElementById('targetStation').value);
+                            if (state.user.balance < 20) {
+                                dispatch({type:'TOAST', payload:{msg:'Insufficient funds for Boost!', type:'error'}});
+                                return;
+                            }
+                            dispatch({type: 'OWNER_REQUEST_BOOST', payload: { bikeId: selectedBike.id, targetStationId }});
+                            dispatch({type:'TOAST', payload:{msg:`Boost request sent for ${selectedBike.id}! -20৳`, type:'success'}});
+                            setSelectedBike(null);
+                        }}
+                        disabled={selectedBike?.boostRequest || state.user.balance < 20}
+                    >
+                        {selectedBike?.boostRequest ? 'Boost Pending Admin Approval' : 'Request Boost (20৳)'}
+                    </Button>
+                </Modal>
+            );
+
+
+            return (
+                <div className="min-h-screen bg-du-dark p-6 pb-20">
+                    <header className="flex justify-between items-center mb-8">
+                        <div>
+                            <h1 className="text-2xl font-bold text-green-400 flex items-center gap-2"><Icon name="briefcase" /> Owner Portal</h1>
+                            <p className="text-xs text-gray-500">Owner Score: {myBikes.length > 0 ? (myBikes.reduce((acc, b) => acc + b.ownerRating, 0) / myBikes.length).toFixed(2) : 4.5} ⭐</p>
+                        </div>
+                        <Button variant="secondary" className="text-xs px-3 py-1" onClick={() => dispatch({type:'LOGOUT'})}>Logout</Button>
+                    </header>
+
+                    {/* Revenue Card (Animated Ticker) */}
+                    <div className="glass-card p-6 rounded-2xl mb-6 relative overflow-hidden bg-gradient-to-r from-green-900/30 to-transparent">
+                        <p className="text-sm text-gray-400">Total Lifetime Earnings</p>
+                        <div className="flex items-baseline gap-1 mt-1">
+                            <span className="text-5xl font-bold font-mono text-green-400">{formatMoney(animatedEarnings)}</span>
+                        </div>
+                        <h4 className="font-bold mt-4 mb-2 border-t border-gray-700 pt-2">Last 30 Days Revenue (Owner Share)</h4>
+                        <Chart />
+                        <Button className="mt-4" onClick={handleExportPDF} icon="file-text">Export Earnings PDF</Button>
+                    </div>
+
+                    {/* Fleet Management */}
+                    <h3 className="text-sm font-bold uppercase text-gray-500 mb-4 tracking-wider">Fleet Status ({myBikes.length} Bikes)</h3>
+                    <div className="grid gap-3">
+                        {myBikes.map(bike => (
+                            <div key={bike.id} className="glass p-4 rounded-xl flex items-center justify-between border-l-4 border-l-du-primary/50">
+                                <div>
+                                    <div className="flex items-center gap-2">
+                                        <h4 className="font-bold text-white">Bike {bike.id}</h4>
+                                        <span className={`text-[10px] px-1.5 py-0.5 rounded border ${bike.status === 'in_use' ? 'border-blue-500 text-blue-400' : 'border-green-500 text-green-400'}`}>
+                                            {bike.status === 'in_use' ? 'RIDING' : 'IDLE'}
+                                        </span>
+                                    </div>
+                                    <div className="flex gap-3 mt-2 text-xs text-gray-400">
+                                        <span className="flex items-center gap-1"><Icon name="battery" size={12}/> {bike.battery}%</span>
+                                        <span className="flex items-center gap-1"><Icon name="percent" size={12}/> Util: {bike.utilization}%</span>
+                                        <span className="flex items-center gap-1"><Icon name="star" size={12}/> {bike.ownerRating.toFixed(2)}</span>
+                                    </div>
+                                </div>
+                                <div className="text-right space-y-1">
+                                    <div className="text-sm font-mono text-green-400">{formatMoney(bike.earnings)}</div>
+                                    <button 
+                                        className={`text-[10px] p-1 rounded font-bold transition ${bike.boostRequest ? 'bg-yellow-800 text-yellow-300' : 'bg-du-primary text-du-dark hover:bg-yellow-600'}`}
+                                        onClick={() => setSelectedBike(bike)}
+                                        disabled={bike.boostRequest}
+                                    >
+                                        {bike.boostRequest ? 'Boost Pending' : 'Boost Bike (20৳)'}
+                                    </button>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                    {selectedBike && <BoostModal />}
+                </div>
+            );
+        };
+
+        // --- ADMIN DASHBOARD ---
+        const AdminDash = () => {
+            const { state, dispatch } = useContext(AppContext);
+            const [filter, setFilter] = useState('');
+            const [broadcastMsg, setBroadcastMsg] = useState('');
+
+            const stats = useMemo(() => {
+                const today = new Date().toDateString();
+                const todayRides = state.db.rides.filter(r => new Date(r.startTime).toDateString() === today);
+                
+                return {
+                    users: state.db.users.length,
+                    activeRides: state.db.rides.filter(r => r.status === 'ongoing').length,
+                    revenueToday: todayRides.reduce((acc, r) => acc + (r.cost * 0.25 || 0), 0), // Admin gets 25%
+                    totalRevenue: state.db.rides.reduce((acc, r) => acc + (r.cost * 0.25 || 0), 0)
+                };
+            }, [state.db]);
+            
+            // Fraud Detection Logic: Flag users with >3 late returns
+            const flaggedUsers = useMemo(() => {
+                const lateReturns = state.db.rides.filter(r => r.lateReturn).reduce((acc, r) => {
+                    acc[r.userId] = (acc[r.userId] || 0) + 1;
+                    return acc;
+                }, {});
+                return Object.keys(lateReturns).filter(email => lateReturns[email] > 3);
+            }, [state.db]);
+            
+            // Heatmap of all rides in last 24h
+            const last24hHeat = useMemo(() => {
+                const twentyFourHoursAgo = Date.now() - 24 * 3600000;
+                return state.db.rides
+                    .filter(r => r.startTime > twentyFourHoursAgo)
+                    .map(r => {
+                        const bike = state.db.bikes.find(b => b.id === r.bikeId);
+                        return bike ? [bike.lat, bike.lng, 0.5] : null;
+                    }).filter(Boolean);
+            }, [state.db.rides]);
+
+
+            const handleTogglePeak = (active) => {
+                dispatch({type: 'ADMIN_TOGGLE_PEAK', payload: active});
+                dispatch({type: 'TOAST', payload: {msg: `Dynamic Pricing ${active ? 'ACTIVATED' : 'DEACTIVATED'}!`, type: active ? 'success' : 'error'}});
+            };
+            
+            const handleBanUser = (email, ban) => {
+                dispatch({type: 'ADMIN_BAN_USER', payload: {email, ban}});
+                dispatch({type: 'TOAST', payload: {msg: `${email} ${ban ? 'BANNED' : 'UNBANNED'}`, type: ban ? 'error' : 'success'}});
+            };
+            
+            const handleBroadcast = () => {
+                 dispatch({type: 'ADMIN_BROADCAST', payload: broadcastMsg});
+                 dispatch({type: 'TOAST', payload: {msg: `Announcement sent system-wide!`, type: 'success'}});
+                 setBroadcastMsg('');
+            };
+
+            const AdminStatCard = ({ title, value, icon, color }) => (
+                 <div className="glass p-4 rounded-xl text-center flex flex-col justify-center items-center">
+                    <Icon name={icon} size={32} className={`mb-2 ${color}`} />
+                    <h2 className="text-3xl font-bold">{value}</h2>
+                    <p className="text-xs text-gray-500 uppercase">{title}</p>
+                </div>
+            );
+
+
+            return (
+                <div className="min-h-screen bg-du-dark p-6 pb-20">
+                    <div className="flex justify-between items-center mb-6">
+                        <h1 className="text-2xl font-bold text-red-500 flex items-center gap-2"><Icon name="shield-alert" /> ADMIN CONSOLE</h1>
+                        <Button variant="secondary" className="text-xs px-3 py-1" onClick={() => dispatch({type:'LOGOUT'})}>Exit</Button>
+                    </div>
+                    
+                    {/* Announcement Banner */}
+                    <div className="w-full bg-red-900/40 text-sm p-3 rounded-xl mb-6 border border-red-700/50 flex items-center gap-2">
+                        <Icon name="megaphone" size={16} className="text-red-300"/>
+                        <span className="font-semibold">{state.db.announcement}</span>
+                    </div>
+
+                    {/* Real-time Analytics Dashboard */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                        <AdminStatCard title="Total Users" value={stats.users} icon="users" color="text-du-primary" />
+                        <AdminStatCard title="Live Rides" value={stats.activeRides} icon="bike" color="text-green-400" />
+                        <AdminStatCard title="Revenue (25%) Today" value={formatMoney(stats.revenueToday)} icon="trending-up" color="text-du-primary" />
+                        <AdminStatCard title="Total Admin Revenue" value={formatMoney(stats.totalRevenue)} icon="dollar-sign" color="text-white" />
+                    </div>
+
+                    {/* Heatmap Section */}
+                    <div className="glass-heavy p-4 rounded-xl mb-8 h-80">
+                         <h3 className="font-bold text-gray-300 mb-2">Ride Heatmap (Last 24h)</h3>
+                         <div className="h-64 rounded-lg overflow-hidden">
+                             <MapComponent bikes={[]} onStationClick={()=>{}} heatData={last24hHeat} />
+                         </div>
+                    </div>
+
+                    {/* System Overrides & Broadcast */}
+                    <div className="glass-heavy p-6 rounded-xl mb-8 border border-red-900/30 space-y-4">
+                        <h3 className="font-bold text-gray-300 mb-4 border-b border-gray-700 pb-2">System Controls</h3>
+                        
+                        <div className="flex justify-between items-center">
+                            <div>
+                                <p className="font-bold">Dynamic Pricing (Peak Hour)</p>
+                                <p className="text-xs text-gray-500">Peak Multiplier (x1.5)</p>
+                            </div>
+                            <div 
+                                onClick={() => handleTogglePeak(!state.db.config.peakActive)}
+                                className={`w-14 h-8 rounded-full p-1 cursor-pointer transition-colors ${state.db.config.peakActive ? 'bg-red-600' : 'bg-gray-700'}`}
+                            >
+                                <div className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform ${state.db.config.peakActive ? 'translate-x-6' : 'translate-x-0'}`}></div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <p className="font-bold mb-2">System-Wide Broadcast</p>
+                            <div className="flex gap-2">
+                                <input className="flex-1 bg-black/30 border border-gray-700 rounded-xl p-3 text-sm" placeholder="Message to all users..." value={broadcastMsg} onChange={e => setBroadcastMsg(e.target.value)}/>
+                                <Button variant="danger" icon="send" onClick={handleBroadcast} disabled={!broadcastMsg}>Send</Button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    {/* User Database Table (Search + Ban/Unban + Fraud Detection) */}
+                    <h3 className="font-bold text-gray-300 mb-4">User Database (Fraud Detection)</h3>
+                    <input className="w-full bg-black/30 border border-gray-700 rounded-lg p-3 mb-4 text-sm" placeholder="Search by Reg No or Email..." value={filter} onChange={e => setFilter(e.target.value)} />
+                    
+                    <div className="overflow-x-auto rounded-xl border border-gray-800">
+                        <table className="w-full text-left text-sm text-gray-400">
+                            <thead className="bg-gray-800 text-gray-200 uppercase text-xs">
+                                <tr>
+                                    <th className="p-3">User/Email</th>
+                                    <th className="p-3">Reg</th>
+                                    <th className="p-3">Role</th>
+                                    <th className="p-3">Status</th>
+                                    <th className="p-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-800 bg-black/20">
+                                {state.db.users.filter(u => u.name?.toLowerCase().includes(filter.toLowerCase()) || u.email.includes(filter)).map((u, i) => {
+                                    const isFlagged = flaggedUsers.includes(u.email);
+                                    return (
+                                    <tr key={i} className={`hover:bg-white/5 ${u.isBanned || isFlagged ? 'bg-red-900/20' : ''}`}>
+                                        <td className="p-3 font-medium text-white">{u.email}</td>
+                                        <td className="p-3 font-mono">{u.reg || 'N/A'}</td>
+                                        <td className="p-3"><span className="bg-gray-700 px-2 py-0.5 rounded text-[10px]">{u.role}</span></td>
+                                        <td className="p-3">
+                                            {u.isBanned ? <span className="text-red-500 font-bold">BANNED</span> : 
+                                             isFlagged ? <span className="text-yellow-500 font-bold">FRAUD FLAG</span> :
+                                             <span className="text-green-500">Active</span>}
+                                        </td>
+                                        <td className="p-3">
+                                            <button 
+                                                onClick={() => handleBanUser(u.email, !u.isBanned)}
+                                                className={`text-[10px] p-1 rounded font-bold transition ${u.isBanned ? 'bg-green-500 text-black' : 'bg-red-500 text-white'}`}
+                                            >
+                                                {u.isBanned ? 'UNBAN' : 'BAN'}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                )})}
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    {/* Maintenance and Requests */}
+                    <h3 className="font-bold text-gray-300 mt-8 mb-4">System Requests</h3>
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <div className="glass-card p-4 rounded-xl">
+                            <h4 className="font-bold text-du-primary mb-2 flex justify-between items-center">Maintenance ({state.db.maintenanceReports.filter(r => r.status === 'New').length})</h4>
+                            <ul className="text-xs space-y-2 max-h-40 overflow-y-auto">
+                                {state.db.maintenanceReports.map(r => (
+                                    <li key={r.id} className="flex justify-between items-center bg-black/30 p-2 rounded">
+                                        <span>{r.bikeId}: {r.reason}</span>
+                                        <button onClick={() => dispatch({type: 'ADMIN_PROCESS_MAINTENANCE', payload: {id: r.id, status: 'Done'}})} className="text-green-400 hover:text-white" disabled={r.status === 'Done'}>{r.status === 'Done' ? 'Done' : 'Resolve'}</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="glass-card p-4 rounded-xl">
+                            <h4 className="font-bold text-du-primary mb-2 flex justify-between items-center">Boost Requests ({state.db.bikes.filter(b => b.boostRequest).length})</h4>
+                            <ul className="text-xs space-y-2 max-h-40 overflow-y-auto">
+                                {state.db.bikes.filter(b => b.boostRequest).map(b => (
+                                    <li key={b.id} className="flex justify-between items-center bg-black/30 p-2 rounded">
+                                        <span>{b.id} → St. {b.boostRequest} (20৳)</span>
+                                        <button onClick={() => dispatch({type: 'ADMIN_APPROVE_BOOST', payload: {bikeId: b.id, stationId: b.boostRequest}})} className="text-green-400 hover:text-white">Approve</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                        <div className="glass-card p-4 rounded-xl">
+                            <h4 className="font-bold text-du-primary mb-2 flex justify-between items-center">Owner Approvals ({state.db.pendingOwners.length})</h4>
+                            <ul className="text-xs space-y-2 max-h-40 overflow-y-auto">
+                                {state.db.pendingOwners.map(o => (
+                                    <li key={o.email} className="flex justify-between items-center bg-black/30 p-2 rounded">
+                                        <span>{o.name} ({o.email.split('@')[0]})</span>
+                                        <button onClick={() => dispatch({type: 'ADMIN_APPROVE_OWNER', payload: {email: o.email}})} className="text-green-400 hover:text-white">Approve</button>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+        
+
+        // --------------------------------------------------------------------------------
+        // 4. APP SHELL & ROUTER
+        // --------------------------------------------------------------------------------
+        
+        const App = () => {
+            const { state } = useContext(AppContext);
+            
+            // Protected Route Wrapper
+            const Protected = ({ children, role }) => {
+                if (state.loading || state.db === null) return <div className="h-screen flex items-center justify-center bg-du-dark"><Skeleton className="h-10 w-40"/></div>;
+                if (!state.user) return <Navigate to="/" />;
+                if (role && state.user.role !== role) {
+                    dispatch({type: 'TOAST', payload: {msg: 'Access Denied: Role Mismatch.', type: 'error'}});
+                    return <Navigate to="/" />;
+                }
+                if (state.user.isBanned) {
+                     dispatch({type: 'TOAST', payload: {msg: 'Your account is currently banned.', type: 'error'}});
+                    return <Navigate to="/" />;
+                }
+                return children;
+            };
+
+            return (
+                <>
+                    <Toast />
+                    <Routes>
+                        <Route path="/" element={<Landing />} />
+                        <Route path="/auth" element={<Auth />} />
+                        <Route path="/rider" element={<Protected role="rider"><RiderDash /></Protected>} />
+                        <Route path="/owner" element={<Protected role="owner"><OwnerDash /></Protected>} />
+                        <Route path="/admin" element={<Protected role="admin"><AdminDash /></Protected>} />
+                        <Route path="*" element={<Navigate to="/" />} />
+                    </Routes>
+                </>
+            );
+        };
+
+        // Render
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(
+            <HashRouter>
+                <AppProvider>
+                    <App />
+                </AppProvider>
+            </HashRouter>
+        );
+
+    </script>
+</body>
+</html>
+
